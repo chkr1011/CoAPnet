@@ -1,4 +1,4 @@
-# COAPnet
+# CoAPnet
 
 # Features
 

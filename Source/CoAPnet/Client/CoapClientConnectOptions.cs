@@ -1,4 +1,6 @@
-﻿namespace CoAPnet.Client
+﻿using CoAPnet.Transport;
+
+namespace CoAPnet.Client
 {
     public class CoapClientConnectOptions
     {

@@ -1,4 +1,4 @@
-﻿namespace CoapTest
+﻿namespace CoAPnet.Protocol
 {
     public enum CoapMessageType
     {

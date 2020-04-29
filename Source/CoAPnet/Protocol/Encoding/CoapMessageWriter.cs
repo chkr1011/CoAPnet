@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace CoapTest
+namespace CoAPnet.Protocol.Encoding
 {
     public sealed class CoapMessageWriter : IDisposable
     {

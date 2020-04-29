@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoapTest
+namespace CoAPnet.Protocol
 {
     public sealed class CoapMessage
     {

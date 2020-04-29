@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace CoapTest
+namespace CoAPnet.Protocol.Encoding
 {
     public sealed class CoapMessageEncoder
     {
@@ -61,17 +60,21 @@ namespace CoapTest
 
                 byte[] value;
 
-                if (option is CoapMessageEmptyOption)
+                if (option.Value is CoapMessageOptionEmptyValue)
                 {
                     value = new byte[0];
                 }
-                else if (option is CoapMessageUintOption uintOption)
+                else if (option.Value is CoapMessageOptionUintValue uintValue)
                 {
-                    value = EncodeUintOptioNValue(uintOption.Value);
+                    value = EncodeUintOptioNValue(uintValue.Value);
                 }
-                else if (option is CoapMessageStringOption stringOption)
+                else if (option.Value is CoapMessageOptionStringValue stringValue)
                 {
-                    value = Encoding.UTF8.GetBytes(stringOption.Value);
+                    value = System.Text.Encoding.UTF8.GetBytes(stringValue.Value);
+                }
+                else if (option.Value is CoapMessageOptionOpaqueValue opaqueValue)
+                {
+                    value = opaqueValue.Value;
                 }
                 else
                 {
@@ -111,7 +114,7 @@ namespace CoapTest
             }
         }
 
-        private byte[] EncodeUintOptioNValue(uint value)
+        byte[] EncodeUintOptioNValue(uint value)
         {
             if (value <= 255U)
             {

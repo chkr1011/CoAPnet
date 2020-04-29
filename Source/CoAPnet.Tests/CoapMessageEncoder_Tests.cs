@@ -1,4 +1,5 @@
-using CoapTest;
+using CoAPnet.Protocol;
+using CoAPnet.Protocol.Encoding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

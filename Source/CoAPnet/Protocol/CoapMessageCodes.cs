@@ -1,8 +1,9 @@
-﻿namespace CoapTest
+﻿namespace CoAPnet.Protocol
 {
     public static class CoapMessageCodes
     {
         public static CoapMessageCode Empty { get; } = new CoapMessageCode(0, 0);
+
         public static CoapMessageCode Get { get; } = new CoapMessageCode(0, 1);
         public static CoapMessageCode Post { get; } = new CoapMessageCode(0, 2);
         public static CoapMessageCode Put { get; } = new CoapMessageCode(0, 3);

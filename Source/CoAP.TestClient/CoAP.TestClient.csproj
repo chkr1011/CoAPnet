@@ -12,10 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Waher.Security.DTLS" Version="1.0.4" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\CoAPnet.Extensions.DTLS\CoAPnet.Extensions.DTLS.csproj" />
     <ProjectReference Include="..\CoAPnet\CoAPnet.csproj" />
   </ItemGroup>
 

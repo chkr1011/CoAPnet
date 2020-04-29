@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoapTest
+namespace CoAPnet.Protocol
 {
     public class CoAPProtocolViolationException : Exception
     {

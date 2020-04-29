@@ -1,4 +1,4 @@
-﻿using CoapTest;
+﻿using CoAPnet.Protocol.Encoding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoAPnet.Tests

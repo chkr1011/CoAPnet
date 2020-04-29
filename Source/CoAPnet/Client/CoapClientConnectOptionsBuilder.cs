@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CoAPnet.Transport;
+using System;
 
 namespace CoAPnet.Client
 {

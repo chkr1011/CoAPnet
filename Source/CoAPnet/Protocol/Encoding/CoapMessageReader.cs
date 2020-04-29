@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace CoapTest
+namespace CoAPnet.Protocol.Encoding
 {
     public sealed class CoapMessageReader : IDisposable
     {
@@ -13,6 +13,14 @@ namespace CoapTest
         public CoapMessageReader(ArraySegment<byte> buffer)
         {
             _memoryStream = new MemoryStream(buffer.Array, 0, buffer.Count, false);
+        }
+
+        public bool EndOfStream
+        {
+            get
+            {
+                return _memoryStream.Position == _memoryStream.Length;
+            }
         }
 
         public int ReadBits(int count)
@@ -66,7 +74,7 @@ namespace CoapTest
 
         public ArraySegment<byte> ReadToEnd()
         {
-            return new ArraySegment<byte>(_memoryStream.ToArray());
+            return new ArraySegment<byte>(_memoryStream.ToArray(), (int)_memoryStream.Position, (int)(_memoryStream.Length - _memoryStream.Position));
         }
 
         public void Dispose()

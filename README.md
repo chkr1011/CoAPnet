@@ -4,7 +4,7 @@
 <br/>
 </p>
 
-[![NuGet Badge](https://buildstats.info/nuget/CoAPnet)](https://www.nuget.org/packages/MQTTnet)
+[![NuGet Badge](https://buildstats.info/nuget/CoAPnet)](https://www.nuget.org/packages/CoAPnet)
 [![Build status](https://ci.appveyor.com/api/projects/status/ycit86voxfevm2aa/branch/master?svg=true)](https://ci.appveyor.com/project/chkr1011/coapnet)
 [![BCH compliance](https://bettercodehub.com/edge/badge/chkr1011/CoAPnet?branch=master)](https://bettercodehub.com/)
 [![Join the chat at https://gitter.im/CoAPnet/community](https://badges.gitter.im/CoAPnet/community.svg)](https://gitter.im/CoAPnet/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

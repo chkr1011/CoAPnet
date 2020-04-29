@@ -16,8 +16,6 @@ namespace CoAPnet.Tests
         {
             var expected = Convert.FromBase64String("QAHLDnIWEP9wYXlsb2Fk");
 
-            // v:1 t:CON c:GET i:cb0e {} [ Uri-Port:5648 ] :: 'payload'
-
             var optionBuilder = new CoapMessageOptionFactory();
 
             var message = new CoapMessage
@@ -43,8 +41,6 @@ namespace CoAPnet.Tests
         public void Encode_Simple_Post_Request()
         {
             var expected = Convert.FromBase64String("QAJYdnIWEP9wYXlsb2FkT3ZlcjEzY2hhcnM=");
-
-            //v:1 t:CON c:POST i:5876 {} [ Uri-Port:5648 ] :: 'payloadOver13chars'
 
             var optionBuilder = new CoapMessageOptionFactory();
 

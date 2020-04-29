@@ -18,9 +18,6 @@ namespace CoAPnet.Protocol.Encoding
                 writer.WriteBits((int)message.Type, 2); // Type
                 writer.WriteBits(message.Token?.Length ?? 0, 4); // Token length
 
-                //writer.WriteBits(message.Code.Class, 5); // Code class
-                //writer.WriteBits(message.Code.Detail, 3); // Code detail
-
                 var code = message.Code.Detail | message.Code.Class << 3;
                 writer.WriteBits(code, 8);
 

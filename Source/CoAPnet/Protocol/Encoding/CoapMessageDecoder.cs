@@ -109,111 +109,111 @@ namespace CoAPnet.Protocol.Encoding
 
                 return options;
             }
+        }
 
-            CoapMessageOption CreateOption(int number, byte[] value)
+        CoapMessageOption CreateOption(int number, byte[] value)
+        {
+            if (number == (int)CoapMessageOptionNumber.IfMatch)
             {
-                if (number == (int)CoapMessageOptionNumber.IfMatch)
-                {
-                    return _optionFactory.CreateIfMatch(value);
-                }
-
-                if (number == (int)CoapMessageOptionNumber.UriHost)
-                {
-                    return _optionFactory.CreateUriHost(System.Text.Encoding.UTF8.GetString(value));
-                }
-
-                if (number == (int)CoapMessageOptionNumber.ETag)
-                {
-                    return _optionFactory.CreateETag(value);
-                }
-
-                if (number == (int)CoapMessageOptionNumber.IfNoneMatch)
-                {
-                    return _optionFactory.CreateIfNoneMatch();
-                }
-
-                if (number == (int)CoapMessageOptionNumber.UriPort)
-                {
-                    return _optionFactory.CreateUriPort(DecodeUintOptionValue(value));
-                }
-
-                if (number == (int)CoapMessageOptionNumber.LocationPath)
-                {
-                    return _optionFactory.CreateLocationPath(System.Text.Encoding.UTF8.GetString(value));
-                }
-
-                if (number == (int)CoapMessageOptionNumber.UriPath)
-                {
-                    return _optionFactory.CreateUriPath(System.Text.Encoding.UTF8.GetString(value));
-                }
-
-                if (number == (int)CoapMessageOptionNumber.ContentFormat)
-                {
-                    return _optionFactory.CreateContentFormat((CoapMessageContentFormat)value[0]);
-                }
-
-                if (number == (int)CoapMessageOptionNumber.MaxAge)
-                {
-                    return _optionFactory.CreateMaxAge(DecodeUintOptionValue(value));
-                }
-
-                if (number == (int)CoapMessageOptionNumber.UriQuery)
-                {
-                    return _optionFactory.CreateUriQuery(System.Text.Encoding.UTF8.GetString(value));
-                }
-
-                if (number == (int)CoapMessageOptionNumber.Accept)
-                {
-                    return _optionFactory.CreateAccept(DecodeUintOptionValue(value));
-                }
-
-                if (number == (int)CoapMessageOptionNumber.LocationQuery)
-                {
-                    return _optionFactory.CreateLocationQuery(System.Text.Encoding.UTF8.GetString(value));
-                }
-
-                if (number == (int)CoapMessageOptionNumber.ProxyUri)
-                {
-                    return _optionFactory.CreateProxyUri(System.Text.Encoding.UTF8.GetString(value));
-                }
-
-                if (number == (int)CoapMessageOptionNumber.ProxyScheme)
-                {
-                    return _optionFactory.CreateProxyScheme(System.Text.Encoding.UTF8.GetString(value));
-                }
-
-                if (number == (int)CoapMessageOptionNumber.Size1)
-                {
-                    return _optionFactory.CreateSize1(DecodeUintOptionValue(value));
-                }
-
-                throw new NotSupportedException();
+                return _optionFactory.CreateIfMatch(value);
             }
 
-            uint DecodeUintOptionValue(byte[] value)
+            if (number == (int)CoapMessageOptionNumber.UriHost)
             {
-                if (value.Length == 1)
-                {
-                    return value[0];
-                }
-
-                if (value.Length == 2)
-                {
-                    return (uint)(value[0] << 8 | value[1]);
-                }
-
-                if (value.Length == 3)
-                {
-                    return (uint)(value[0] << 16 | value[1] << 8 | value[2]);
-                }
-
-                if (value.Length == 4)
-                {
-                    return (uint)(value[0] << 24 | value[1] << 16 | value[2] << 8 | value[3]);
-                }
-
-                throw new CoAPProtocolViolationException("The buffer for the uint option is too long.");
+                return _optionFactory.CreateUriHost(System.Text.Encoding.UTF8.GetString(value));
             }
+
+            if (number == (int)CoapMessageOptionNumber.ETag)
+            {
+                return _optionFactory.CreateETag(value);
+            }
+
+            if (number == (int)CoapMessageOptionNumber.IfNoneMatch)
+            {
+                return _optionFactory.CreateIfNoneMatch();
+            }
+
+            if (number == (int)CoapMessageOptionNumber.UriPort)
+            {
+                return _optionFactory.CreateUriPort(DecodeUintOptionValue(value));
+            }
+
+            if (number == (int)CoapMessageOptionNumber.LocationPath)
+            {
+                return _optionFactory.CreateLocationPath(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == (int)CoapMessageOptionNumber.UriPath)
+            {
+                return _optionFactory.CreateUriPath(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == (int)CoapMessageOptionNumber.ContentFormat)
+            {
+                return _optionFactory.CreateContentFormat((CoapMessageContentFormat)value[0]);
+            }
+
+            if (number == (int)CoapMessageOptionNumber.MaxAge)
+            {
+                return _optionFactory.CreateMaxAge(DecodeUintOptionValue(value));
+            }
+
+            if (number == (int)CoapMessageOptionNumber.UriQuery)
+            {
+                return _optionFactory.CreateUriQuery(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == (int)CoapMessageOptionNumber.Accept)
+            {
+                return _optionFactory.CreateAccept(DecodeUintOptionValue(value));
+            }
+
+            if (number == (int)CoapMessageOptionNumber.LocationQuery)
+            {
+                return _optionFactory.CreateLocationQuery(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == (int)CoapMessageOptionNumber.ProxyUri)
+            {
+                return _optionFactory.CreateProxyUri(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == (int)CoapMessageOptionNumber.ProxyScheme)
+            {
+                return _optionFactory.CreateProxyScheme(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == (int)CoapMessageOptionNumber.Size1)
+            {
+                return _optionFactory.CreateSize1(DecodeUintOptionValue(value));
+            }
+
+            throw new NotSupportedException();
+        }
+
+        uint DecodeUintOptionValue(byte[] value)
+        {
+            if (value.Length == 1)
+            {
+                return value[0];
+            }
+
+            if (value.Length == 2)
+            {
+                return (uint)(value[0] << 8 | value[1]);
+            }
+
+            if (value.Length == 3)
+            {
+                return (uint)(value[0] << 16 | value[1] << 8 | value[2]);
+            }
+
+            if (value.Length == 4)
+            {
+                return (uint)(value[0] << 24 | value[1] << 16 | value[2] << 8 | value[3]);
+            }
+
+            throw new CoAPProtocolViolationException("The buffer for the uint option is too long.");
         }
     }
 }

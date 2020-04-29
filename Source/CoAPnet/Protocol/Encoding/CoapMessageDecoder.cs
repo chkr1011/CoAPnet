@@ -55,60 +55,60 @@ namespace CoAPnet.Protocol.Encoding
 
                 return message;
             }
+        }
 
-            List<CoapMessageOption> DecodeOptions(CoapMessageReader reader)
+        List<CoapMessageOption> DecodeOptions(CoapMessageReader reader)
+        {
+            var options = new List<CoapMessageOption>();
+
+            if (reader.EndOfStream)
             {
-                var options = new List<CoapMessageOption>();
-
-                if (reader.EndOfStream)
-                {
-                    return options;
-                }
-
-                var lastNumber = 0;
-                while (!reader.EndOfStream)
-                {
-                    var delta = reader.ReadBits(4);
-                    var length = reader.ReadBits(4);
-
-                    if ((byte)(delta << 4 | length) == 0xFF)
-                    {
-                        // Payload marker.
-                        break;
-                    }
-
-                    if (delta == 13)
-                    {
-                        delta = reader.ReadBits(8) + 13;
-                    }
-                    else if (delta == 14)
-                    {
-                        delta = reader.ReadBits(8) + 269;
-                    }
-
-                    if (length == 13)
-                    {
-                        length = reader.ReadBits(8) + 13;
-                    }
-                    else if (length == 14)
-                    {
-                        length = reader.ReadBits(8) + 269;
-                    }
-
-                    byte[] value = null;
-                    if (length > 0)
-                    {
-                        value = reader.ReadBytes(length);
-                    }
-
-                    var number = lastNumber + delta;
-                    lastNumber = number;
-
-                    options.Add(CreateOption(number, value));
-                }
-
                 return options;
             }
+
+            var lastNumber = 0;
+            while (!reader.EndOfStream)
+            {
+                var delta = reader.ReadBits(4);
+                var length = reader.ReadBits(4);
+
+                if ((byte)(delta << 4 | length) == 0xFF)
+                {
+                    // Payload marker.
+                    break;
+                }
+
+                if (delta == 13)
+                {
+                    delta = reader.ReadBits(8) + 13;
+                }
+                else if (delta == 14)
+                {
+                    delta = reader.ReadBits(8) + 269;
+                }
+
+                if (length == 13)
+                {
+                    length = reader.ReadBits(8) + 13;
+                }
+                else if (length == 14)
+                {
+                    length = reader.ReadBits(8) + 269;
+                }
+
+                byte[] value = null;
+                if (length > 0)
+                {
+                    value = reader.ReadBytes(length);
+                }
+
+                var number = lastNumber + delta;
+                lastNumber = number;
+
+                options.Add(CreateOption(number, value));
+            }
+
+            return options;
         }
 
         CoapMessageOption CreateOption(int number, byte[] value)

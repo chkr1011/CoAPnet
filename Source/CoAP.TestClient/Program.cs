@@ -22,7 +22,7 @@ namespace CoAP.TestClient
             var request = new CoapRequest
             {
                 Method = CoapRequestMethod.Get,
-                Uri = "15001"
+                UriPath = "15001/65547"
             };
 
             await coapClient.ConnectAsync(new CoapClientConnectOptions

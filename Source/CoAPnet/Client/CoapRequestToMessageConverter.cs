@@ -16,13 +16,64 @@ namespace CoAPnet.Client
             {
                 Type = CoapMessageType.Confirmable,
                 Code = GetMessageCode(request.Method),
-                Options = new List<CoapMessageOption>()
+                Options = new List<CoapMessageOption>(),
+                Payload = request.Payload
             };
 
-            message.Options.Add(_optionFactory.CreateUriPath(request.Uri));
-            message.Options.Add(_optionFactory.CreateUriPort(5648));
+            ApplyUriHost(request, message);
+            ApplyUriPort(request, message);
+            ApplyUriPath(request, message);
+            ApplyUriQuery(request, message);
 
             return message;
+        }
+
+        void ApplyUriHost(CoapRequest request, CoapMessage message)
+        {
+            if (string.IsNullOrEmpty(request.UriHost))
+            {
+                return;
+            }
+
+            message.Options.Add(_optionFactory.CreateUriHost(request.UriHost));
+        }
+
+        void ApplyUriPort(CoapRequest request, CoapMessage message)
+        {
+            if (!request.UriPort.HasValue)
+            {
+                return;
+            }
+
+            message.Options.Add(_optionFactory.CreateUriPort((uint)request.UriPort.Value));
+        }
+
+        void ApplyUriPath(CoapRequest request, CoapMessage message)
+        {
+            if (string.IsNullOrEmpty(request.UriPath))
+            {
+                return;
+            }
+
+            var paths = request.UriPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var path in paths)
+            {
+                message.Options.Add(_optionFactory.CreateUriPath(path));
+            }
+        }
+
+        void ApplyUriQuery(CoapRequest request, CoapMessage message)
+        {
+            if (request.UriQuery == null)
+            {
+                return;
+            }
+
+            foreach (var query in request.UriQuery)
+            {
+                message.Options.Add(_optionFactory.CreateUriQuery(query));
+            }
         }
 
         static CoapMessageCode GetMessageCode(CoapRequestMethod method)

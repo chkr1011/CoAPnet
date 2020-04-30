@@ -40,13 +40,7 @@ namespace CoAPnet.Extensions.DTLS
 
             _connectOptions = options;
 
-            if (_dtlsClient != null)
-            {
-                _dtlsClient.OnDatagramReceived -= OnDatagramReceived;
-                _dtlsClient.Dispose();
-            }
-
-            _udpClient?.Dispose();
+            Dispose();
 
             await ResolveIPEndpointAsync().ConfigureAwait(false);
             ConvertCredentials();
@@ -91,7 +85,12 @@ namespace CoAPnet.Extensions.DTLS
 
         public void Dispose()
         {
-            _dtlsClient?.Dispose();
+            if (_dtlsClient != null)
+            {
+                _dtlsClient.OnDatagramReceived -= OnDatagramReceived;
+                _dtlsClient.Dispose();
+            }
+
             _udpClient?.Dispose();
         }
 

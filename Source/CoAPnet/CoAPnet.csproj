@@ -4,4 +4,9 @@
     <TargetFrameworks>net452;netstandard1.3;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Logging\" />
+    <Folder Include="MessageCorrelation\" />
+  </ItemGroup>
+
 </Project>

@@ -15,7 +15,11 @@
     <copyright>Copyright Christian Kratky 2019-2020</copyright>
     <tags>CoAP HTTP DTLS Message Telemetry Transport CoAPClient CoAPServer NETStandard IoT InternetOfThings Messaging Hardware Arduino Sensor Actuator M2M ESP Smart Home Cities Automation Xamarin</tags>
     <dependencies>
-      <dependency id="CoAPnet" version="0.0.1" />
+      <group targetFramework="netstandard2.0">
+        <dependency id="CoAPnet" version="$nugetVersion" />
+        <dependency id="NETStandard.Library" version="2.0.0" />
+        <dependency id="Waher.Security.DTLS" version="1.0.4" />
+      </group>
     </dependencies>
   </metadata>
 

@@ -10,7 +10,7 @@
     <iconUrl>https://raw.githubusercontent.com/chkr1011/CoAPnet/master/Images/Logo_128x128.png</iconUrl>
     <icon>images\Logo_128x128.png</icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>This is an extension library which provides a DTLS client with additional features using CoAPnet.</description>
+    <description>This is an extension library which provides a DTLS client with additional features using CoAPnet. The DTLS implementation is powered by _Waher.Security.DTLS_.</description>
     <releaseNotes>For release notes please go to CoAPnet release notes (https://www.nuget.org/packages/CoAPnet/).</releaseNotes>
     <copyright>Copyright Christian Kratky 2019-2020</copyright>
     <tags>CoAP HTTP DTLS Message Telemetry Transport CoAPClient CoAPServer NETStandard IoT InternetOfThings Messaging Hardware Arduino Sensor Actuator M2M ESP Smart Home Cities Automation Xamarin</tags>

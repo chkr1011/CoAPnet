@@ -21,6 +21,8 @@ namespace CoAPnet.Extensions.DTLS
         Waher.Security.DTLS.DtlsOverUdp _dtlsClient;
         CoapTransportLayerConnectOptions _connectOptions;
         Waher.Security.DTLS.IDtlsCredentials _credentials;
+        bool _connectionTested;
+        bool _connectionWorks;
 
         public DtlsCoapTransportLayer()
         {
@@ -75,22 +77,37 @@ namespace CoAPnet.Extensions.DTLS
         {
             ThrowIfNotConnected();
 
-            var promise = new TaskCompletionSource<bool>();
-
-            _dtlsClient.Send(buffer.ToArray(), _connectOptions.EndPoint, _credentials, (s, e) =>
+            if (!_connectionTested)
             {
-                //promise.TrySetResult(e.Successful);
-            }, null);
+                _connectionTested = true;
 
-            // TODO: Check why the callback is only called for the first time.
-            promise.TrySetResult(true);
+                var promise = new TaskCompletionSource<bool>();
 
-            var result = await promise.Task.ConfigureAwait(false);
+                _dtlsClient.Send(buffer.ToArray(), _connectOptions.EndPoint, _credentials, (s, e) =>
+                {
+                    // This only works the first time.
+                    _connectionWorks = e.Successful;
+                    promise.TrySetResult(e.Successful);
+                }, null);
 
-            if (!result)
+                var result = await promise.Task.ConfigureAwait(false);
+
+                if (!result)
+                {
+                    throw new CoapCommunicationException("Sending CoAP message over DTLS failed.", null);
+                }
+
+                return;
+            }
+
+            if (!_connectionWorks)
             {
                 throw new CoapCommunicationException("Sending CoAP message over DTLS failed.", null);
             }
+
+            _dtlsClient.Send(buffer.ToArray(), _connectOptions.EndPoint, _credentials, (s, e) =>
+            {
+            }, null);
         }
 
         public void Dispose()

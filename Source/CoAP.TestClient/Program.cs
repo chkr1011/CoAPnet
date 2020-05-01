@@ -1,7 +1,6 @@
 ﻿using CoAPnet;
 using CoAPnet.Client;
 using CoAPnet.Extensions.DTLS;
-using CoAPnet.Protocol;
 using System;
 using System.Text;
 using System.Threading;
@@ -15,50 +14,42 @@ namespace CoAP.TestClient
 
         static async Task Main()
         {
-            var optionBuilder = new CoapMessageOptionFactory();
-
-            _coapClient = new CoapFactory().CreateClient();
-
-            Console.WriteLine("< CONNECTING...");
-
-            var request = new CoapRequest
+            using (_coapClient = new CoapFactory().CreateClient())
             {
-                Method = CoapRequestMethod.Get,
-                UriPath = "15001"
-            };
+                Console.WriteLine("< CONNECTING...");
 
-            await _coapClient.ConnectAsync(new CoapClientConnectOptions
-            {
-                Host = "GW-B8D7AF2B3EA3.fritz.box",
-                Port = 5684,
-                TransportLayer = new DtlsCoapTransportLayer()
-                {
-                    Credentials = new PreSharedKey
-                    {
-                        Identity = Encoding.ASCII.GetBytes("IDENTITY"),
-                        Key = Encoding.ASCII.GetBytes("lqxbBH6o2eAKSo5A")
-                    }
-                }
-            }, CancellationToken.None);
+                var connectOptions = new CoapClientConnectOptionsBuilder()
+                    .WithHost("GW-B8D7AF2B3EA3.fritz.box")
+                    .WithPort(5684)
+                    .WithTransportLayer(new DtlsCoapTransportLayerBuilder()
+                        .WithPreSharedKey("IDENTITY", "lqxbBH6o2eAKSo5A")
+                        .Build())
+                    .Build();
 
-            await SendRequest(request).ConfigureAwait(false);
+                await _coapClient.ConnectAsync(connectOptions, CancellationToken.None);
 
-            request = new CoapRequest
-            {
-                Method = CoapRequestMethod.Get,
-                UriPath = "15001/65550"
-            };
+                var request = new CoapRequestBuilder()
+                    .WithMethod(CoapRequestMethod.Get)
+                    .WithPath("15001")
+                    .Build();
 
-            await SendRequest(request).ConfigureAwait(false);
+                await SendRequest(request).ConfigureAwait(false);
 
-            request = new CoapRequest
-            {
-                Method = CoapRequestMethod.Put,
-                UriPath = "15001/65550",
-                Payload = Encoding.ASCII.GetBytes("{\"3311\": [{\"5850\": 1}]}")
-            };
+                request = new CoapRequestBuilder()
+                    .WithMethod(CoapRequestMethod.Get)
+                    .WithPath("15001/65550")
+                    .Build();
 
-            await SendRequest(request).ConfigureAwait(false);
+                await SendRequest(request).ConfigureAwait(false);
+
+                request = new CoapRequestBuilder()
+                    .WithMethod(CoapRequestMethod.Put)
+                    .WithPath("15001/65550")
+                    .WithPayload("{\"3311\": [{\"5850\": 0}]}")
+                    .Build();
+
+                await SendRequest(request).ConfigureAwait(false);
+            }
         }
 
         static async Task SendRequest(CoapRequest request)

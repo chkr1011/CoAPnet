@@ -19,7 +19,7 @@ namespace CoAPnet.Client
 
         public string UriPath { get; set; }
 
-        public List<string> UriQuery { get; set; }
+        public ICollection<string> UriQuery { get; set; }
 
         public ArraySegment<byte> Payload { get; set; }
     }

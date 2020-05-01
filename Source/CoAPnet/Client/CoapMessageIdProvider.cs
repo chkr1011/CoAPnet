@@ -2,9 +2,10 @@
 
 namespace CoAPnet.Client
 {
-    public class CoapMessageIdProvider
+    public sealed class CoapMessageIdProvider
     {
-        object _syncRoot = new object();
+        readonly object _syncRoot = new object();
+
         ushort _value;
 
         public CoapMessageIdProvider()
@@ -15,7 +16,7 @@ namespace CoAPnet.Client
             var buffer = new byte[2];
             new Random().NextBytes(buffer);
 
-            BitConverter.ToUInt16(buffer, 0);
+            _value = BitConverter.ToUInt16(buffer, 0);
         }
 
         public ushort Next()

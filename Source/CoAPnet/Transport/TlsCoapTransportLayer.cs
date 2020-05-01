@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace CoAPnet.Transport
 {
-    public sealed class TcpCoapTransportLayer : ICoapTransportLayer
+    public sealed class TlsCoapTransportLayer : ICoapTransportLayer
     {
         public Task ConnectAsync(CoapTransportLayerConnectOptions connectOptions, CancellationToken cancellationToken)
         {

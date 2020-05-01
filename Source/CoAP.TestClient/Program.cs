@@ -9,27 +9,29 @@ using System.Threading.Tasks;
 
 namespace CoAP.TestClient
 {
-    class Program
+    static class Program
     {
+        static ICoapClient _coapClient;
+
         static async Task Main()
         {
             var optionBuilder = new CoapMessageOptionFactory();
 
-            var coapClient = new CoapFactory().CreateClient();
+            _coapClient = new CoapFactory().CreateClient();
 
-            Console.WriteLine("CONNECTING...");
+            Console.WriteLine("< CONNECTING...");
 
             var request = new CoapRequest
             {
                 Method = CoapRequestMethod.Get,
-                UriPath = "15001/65547"
+                UriPath = "15001"
             };
 
-            await coapClient.ConnectAsync(new CoapClientConnectOptions
+            await _coapClient.ConnectAsync(new CoapClientConnectOptions
             {
-                Host = "192.168.1.228",
+                Host = "GW-B8D7AF2B3EA3.fritz.box",
                 Port = 5684,
-                TransportLayer = new UdpWithDtlsCoapTransportLayer()
+                TransportLayer = new DtlsCoapTransportLayer()
                 {
                     Credentials = new PreSharedKey
                     {
@@ -39,14 +41,41 @@ namespace CoAP.TestClient
                 }
             }, CancellationToken.None);
 
-            var response = await coapClient.Request(request, CancellationToken.None);
+            await SendRequest(request).ConfigureAwait(false);
 
-            Console.WriteLine("DATA RECEIVED");
+            request = new CoapRequest
+            {
+                Method = CoapRequestMethod.Get,
+                UriPath = "15001/65550"
+            };
 
-            Console.WriteLine("Code = " + response.StatusCode);
-            Console.WriteLine("Payload = " + Encoding.ASCII.GetString(response.Payload.ToArray()));
+            await SendRequest(request).ConfigureAwait(false);
 
-            Console.ReadLine();
+            request = new CoapRequest
+            {
+                Method = CoapRequestMethod.Put,
+                UriPath = "15001/65550",
+                Payload = Encoding.ASCII.GetBytes("{\"3311\": [{\"5850\": 1}]}")
+            };
+
+            await SendRequest(request).ConfigureAwait(false);
+        }
+
+        static async Task SendRequest(CoapRequest request)
+        {
+            var response = await _coapClient.RequestAsync(request, CancellationToken.None).ConfigureAwait(false);
+            PrintResponse(response);
+        }
+
+        static void PrintResponse(CoapResponse response)
+        {
+            Console.WriteLine("> RESPONSE");
+            Console.WriteLine("   + Status         = " + response.StatusCode);
+            Console.WriteLine("   + Status code    = " + (int)response.StatusCode);
+            Console.WriteLine("   + Content format = " + response.Options.ContentFormat);
+            Console.WriteLine("   + Max age        = " + response.Options.MaxAge);
+            Console.WriteLine("   + Payload        = " + Encoding.UTF8.GetString(response.Payload.ToArray()));
+            Console.WriteLine();
         }
     }
 }

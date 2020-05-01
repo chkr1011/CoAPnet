@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <Folder Include="Logging\" />
-    <Folder Include="MessageCorrelation\" />
+    <Folder Include="Internal\" />
   </ItemGroup>
 
 </Project>

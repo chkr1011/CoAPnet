@@ -1,5 +1,4 @@
 ﻿using CoAPnet.Transport;
-using System.Net.Sockets;
 
 namespace CoAPnet.Client
 {
@@ -8,8 +7,6 @@ namespace CoAPnet.Client
         public string Host { get; set; }
 
         public int Port { get; set; }
-
-        public AddressFamily? AddressFamily { get; set; }
 
         public ICoapTransportLayer TransportLayer { get; set; }
     }

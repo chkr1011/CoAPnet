@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CoAPnet.Client
 {
-    public class CoapRequestToMessageConverter
+    public sealed class CoapRequestToMessageConverter
     {
         readonly CoapMessageOptionFactory _optionFactory = new CoapMessageOptionFactory();
 

@@ -1,24 +1,21 @@
-﻿using CoAPnet.Protocol.Encoding;
-using CoAPnet.Transport;
+﻿using CoAPnet.LowLevelClient;
+using CoAPnet.MessageDispatcher;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CoAPnet.Client
 {
-    // TODO: Add ICoapClient interface.
-    public sealed class CoapClient : IDisposable
+    public sealed class CoapClient : ICoapClient
     {
-        readonly CoapMessageIdProvider _messageIdProvider = new CoapMessageIdProvider();
-        readonly CoapMessageEncoder _messageEncoder = new CoapMessageEncoder();
-        readonly CoapMessageDecoder _messageDecoder = new CoapMessageDecoder();
         readonly CoapRequestToMessageConverter _requestToMessageConverter = new CoapRequestToMessageConverter();
         readonly CoapMessageToResponseConverter _messageToResponseConverter = new CoapMessageToResponseConverter();
+        readonly CoapMessageDispatcher _messageDispatcher = new CoapMessageDispatcher();
+        readonly CoapMessageIdProvider _messageIdProvider = new CoapMessageIdProvider();
 
-        readonly ArraySegment<byte> _receiveBuffer = new ArraySegment<byte>(new byte[64000]);
-
-        ICoapTransportLayer _transportLayer;
+        LowLevelCoapClient _lowLevelClient;
         CoapClientConnectOptions _connectOptions;
+        CancellationTokenSource _cancellationToken;
 
         public async Task ConnectAsync(CoapClientConnectOptions options, CancellationToken cancellationToken)
         {
@@ -26,34 +23,50 @@ namespace CoAPnet.Client
 
             _connectOptions = options;
 
-            _transportLayer = options.TransportLayer;
+            _lowLevelClient?.Dispose();
 
-            await _transportLayer.ConnectAsync(options, cancellationToken).ConfigureAwait(false);
+            _lowLevelClient = new LowLevelCoapClient();
+
+            await _lowLevelClient.ConnectAsync(options, cancellationToken).ConfigureAwait(false);
+            _cancellationToken = new CancellationTokenSource();
+
+            Task.Run(() => ReceiveMessages(_cancellationToken.Token), _cancellationToken.Token);
         }
 
-        public async Task<CoapResponse> Request(CoapRequest request, CancellationToken cancellationToken)
+        public async Task<CoapResponse> RequestAsync(CoapRequest request, CancellationToken cancellationToken)
         {
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             var requestMessage = _requestToMessageConverter.Convert(request);
             requestMessage.Id = _messageIdProvider.Next();
 
-            var requestMessageBuffer = _messageEncoder.Encode(requestMessage);
+            var responseAwaiter = _messageDispatcher.AddAwaiter(requestMessage.Id);
+            await _lowLevelClient.SendAsync(requestMessage, cancellationToken);
 
-            await _transportLayer.SendAsync(requestMessageBuffer, cancellationToken).ConfigureAwait(false);
-
-            // TODO: Add proper reqest-response matching like in MQTTnet.
-
-            await _transportLayer.ReceiveAsync(_receiveBuffer, cancellationToken).ConfigureAwait(false);
-
-            var responseMessage = _messageDecoder.Decode(_receiveBuffer);
+            var responseMessage = await responseAwaiter.WaitOneAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
 
             return _messageToResponseConverter.Convert(responseMessage);
         }
 
         public void Dispose()
         {
-            _transportLayer?.Dispose();
+            _lowLevelClient?.Dispose();
+        }
+
+        async Task ReceiveMessages(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    var message = await _lowLevelClient.ReceiveAsync(cancellationToken).ConfigureAwait(false);
+                    _messageDispatcher.Dispatch(message);
+                }
+                catch (Exception)
+                {
+                    // TODO: Add logging
+                }
+            }
         }
     }
 }

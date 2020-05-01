@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace CoAPnet.Protocol
+namespace CoAPnet.Exceptions
 {
     public class CoAPProtocolViolationException : Exception
     {
         public CoAPProtocolViolationException(string message) : base(message)
         {
-
         }
     }
 }

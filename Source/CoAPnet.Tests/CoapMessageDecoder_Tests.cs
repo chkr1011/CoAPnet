@@ -32,6 +32,27 @@ namespace CoAPnet.Tests
         }
 
         [TestMethod]
+        public void Encode_And_Decode_Payload_Length_12()
+        {
+            var optionBuilder = new CoapMessageOptionFactory();
+
+            var message = new CoapMessage
+            {
+                Type = CoapMessageType.Confirmable,
+                Code = CoapMessageCodes.Put,
+                Id = ushort.MaxValue,
+                Payload = Encoding.UTF8.GetBytes("123456789012")
+            };
+
+            message.Options = new List<CoapMessageOption>
+            {
+                optionBuilder.CreateUriPort(5648)
+            };
+
+            Enocde_And_Decode_Internal(message);
+        }
+
+        [TestMethod]
         public void Encode_And_Decode_No_Payload()
         {
             var optionBuilder = new CoapMessageOptionFactory();

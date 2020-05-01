@@ -1,17 +1,40 @@
 ﻿using CoAPnet.Protocol;
 using System;
+using System.Linq;
 
 namespace CoAPnet.Client
 {
-    public class CoapMessageToResponseConverter
+    public sealed class CoapMessageToResponseConverter
     {
         public CoapResponse Convert(CoapMessage message)
         {
+            if (message is null) throw new ArgumentNullException(nameof(message));
+
             return new CoapResponse
             {
                 StatusCode = GetStatusCode(message),
+                Options = GetOptions(message),
                 Payload = message.Payload
             };
+        }
+
+        CoapResposeOptions GetOptions(CoapMessage message)
+        {
+            var options = new CoapResposeOptions();
+
+            var contentFormatOption = message.Options.FirstOrDefault(o => o.Number == (byte)CoapMessageOptionNumber.ContentFormat);
+            if (contentFormatOption != null)
+            {
+                options.ContentFormat = (CoapMessageContentFormat)((CoapMessageOptionUintValue)contentFormatOption.Value).Value;
+            }
+
+            var maxAgeOption = message.Options.FirstOrDefault(o => o.Number == (byte)CoapMessageOptionNumber.MaxAge);
+            if (maxAgeOption != null)
+            {
+                options.MaxAge = (int)((CoapMessageOptionUintValue)maxAgeOption.Value).Value;
+            }
+
+            return options;
         }
 
         CoapResponseStatusCode GetStatusCode(CoapMessage message)

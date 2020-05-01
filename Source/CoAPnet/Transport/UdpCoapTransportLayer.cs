@@ -1,6 +1,4 @@
-﻿using CoAPnet.Client;
-using System;
-using System.Net;
+﻿using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,9 +8,9 @@ namespace CoAPnet.Transport
     public sealed class UdpCoapTransportLayer : ICoapTransportLayer
     {
         UdpClient _udpClient;
-        CoapClientConnectOptions _connectOptions;
+        CoapTransportLayerConnectOptions _connectOptions;
 
-        public Task ConnectAsync(CoapClientConnectOptions options, CancellationToken cancellationToken)
+        public Task ConnectAsync(CoapTransportLayerConnectOptions options, CancellationToken cancellationToken)
         {
             if (options is null) throw new ArgumentNullException(nameof(options));
 
@@ -20,15 +18,7 @@ namespace CoAPnet.Transport
 
             Dispose();
 
-            // ! Match the local address family with the address family of the host!
-            if (IPAddress.TryParse(options.Host, out var ipAddress))
-            {
-                _udpClient = new UdpClient(0, ipAddress.AddressFamily);
-            }
-            else
-            {
-                _udpClient = new UdpClient(0, options.AddressFamily ?? AddressFamily.InterNetwork);
-            }
+            _udpClient = new UdpClient(0, options.EndPoint.AddressFamily);
 
             return Task.FromResult(0);
         }
@@ -49,7 +39,7 @@ namespace CoAPnet.Transport
         {
             ThrowIfNotConnected();
 
-            return _udpClient.SendAsync(buffer.Array, buffer.Count, _connectOptions.Host, _connectOptions.Port);
+            return _udpClient.SendAsync(buffer.Array, buffer.Count, _connectOptions.EndPoint);
         }
 
         public void Dispose()

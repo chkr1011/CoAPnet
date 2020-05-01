@@ -1,17 +1,16 @@
-﻿using CoAPnet.Client;
-using CoAPnet.Exceptions;
+﻿using CoAPnet.Exceptions;
 using CoAPnet.Transport;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CoAPnet.Extensions.DTLS
 {
-    public sealed class UdpWithDtlsCoapTransportLayer : ICoapTransportLayer
+    public sealed class DtlsCoapTransportLayer : ICoapTransportLayer
     {
         static bool _waherTypesInitialized;
 
@@ -19,22 +18,22 @@ namespace CoAPnet.Extensions.DTLS
 
         UdpClient _udpClient;
         Waher.Security.DTLS.DtlsOverUdp _dtlsClient;
-        CoapClientConnectOptions _connectOptions;
-        IPEndPoint _ipEndPoint;
+        CoapTransportLayerConnectOptions _connectOptions;
         Waher.Security.DTLS.IDtlsCredentials _credentials;
 
-        public UdpWithDtlsCoapTransportLayer()
+        public DtlsCoapTransportLayer()
         {
             if (!_waherTypesInitialized)
             {
-                Waher.Runtime.Inventory.Types.Initialize(typeof(Waher.Security.DTLS.Ciphers.PskCipher).Assembly);
+                var assembly = Assembly.Load(new System.Reflection.AssemblyName("Waher.Security.DTLS"));
+                Waher.Runtime.Inventory.Types.Initialize(assembly);
                 _waherTypesInitialized = true;
             }
         }
 
         public IDtlsCredentials Credentials { get; set; }
 
-        public async Task ConnectAsync(CoapClientConnectOptions options, CancellationToken cancellationToken)
+        public Task ConnectAsync(CoapTransportLayerConnectOptions options, CancellationToken cancellationToken)
         {
             if (options is null) throw new ArgumentNullException(nameof(options));
 
@@ -42,13 +41,14 @@ namespace CoAPnet.Extensions.DTLS
 
             Dispose();
 
-            await ResolveIPEndpointAsync().ConfigureAwait(false);
             ConvertCredentials();
 
             // ! Match the local address family with the address family of the host!
-            _udpClient = new UdpClient(0, _ipEndPoint.AddressFamily);
+            _udpClient = new UdpClient(0, _connectOptions.EndPoint.AddressFamily);
             _dtlsClient = new Waher.Security.DTLS.DtlsOverUdp(_udpClient, Waher.Security.DTLS.DtlsMode.Client, null, null);
             _dtlsClient.OnDatagramReceived += OnDatagramReceived;
+
+            return Task.FromResult(0);
         }
 
         public Task<int> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
@@ -70,10 +70,13 @@ namespace CoAPnet.Extensions.DTLS
 
             var promise = new TaskCompletionSource<bool>();
 
-            _dtlsClient.Send(buffer.ToArray(), _ipEndPoint, _credentials, (s, e) =>
+            _dtlsClient.Send(buffer.ToArray(), _connectOptions.EndPoint, _credentials, (s, e) =>
             {
                 promise.TrySetResult(e.Successful);
             }, null);
+
+            // TODO: Check why the callback is only called for the first time.
+            promise.TrySetResult(true);
 
             var result = await promise.Task.ConfigureAwait(false);
 
@@ -92,20 +95,6 @@ namespace CoAPnet.Extensions.DTLS
             }
 
             _udpClient?.Dispose();
-        }
-
-        async Task ResolveIPEndpointAsync()
-        {
-            if (IPAddress.TryParse(_connectOptions.Host, out var hostIPAddress))
-            {
-                _ipEndPoint = new IPEndPoint(hostIPAddress, _connectOptions.Port);
-                return;
-            }
-
-            var hostIPAddresses = await Dns.GetHostAddressesAsync(_connectOptions.Host).ConfigureAwait(false);
-
-            // We only use the first address for now.
-            _ipEndPoint = new IPEndPoint(hostIPAddresses.First(), _connectOptions.Port);
         }
 
         void ConvertCredentials()

@@ -33,6 +33,17 @@ namespace CoAPnet.Client
             {
                 options.MaxAge = (int)((CoapMessageOptionUintValue)maxAgeOption.Value).Value;
             }
+            else
+            {
+                // From RFC:  A default value of 60 seconds is assumed in the absence of the option in a response.
+                options.MaxAge = 60;
+            }
+
+            var eTagOption = message.Options.FirstOrDefault(o => o.Number == (byte)CoapMessageOptionNumber.ETag);
+            if (eTagOption != null)
+            {
+                options.ETag = ((CoapMessageOptionOpaqueValue)maxAgeOption.Value).Value;
+            }
 
             return options;
         }

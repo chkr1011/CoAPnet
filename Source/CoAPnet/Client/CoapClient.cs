@@ -1,4 +1,5 @@
-﻿using CoAPnet.LowLevelClient;
+﻿using CoAPnet.Internal;
+using CoAPnet.LowLevelClient;
 using CoAPnet.MessageDispatcher;
 using System;
 using System.Threading;
@@ -30,7 +31,7 @@ namespace CoAPnet.Client
             await _lowLevelClient.ConnectAsync(options, cancellationToken).ConfigureAwait(false);
             _cancellationToken = new CancellationTokenSource();
 
-            Task.Run(() => ReceiveMessages(_cancellationToken.Token), _cancellationToken.Token);
+            ParallelTask.Run(() => ReceiveMessages(_cancellationToken.Token), _cancellationToken.Token);
         }
 
         public async Task<CoapResponse> RequestAsync(CoapRequest request, CancellationToken cancellationToken)

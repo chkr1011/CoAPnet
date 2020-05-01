@@ -10,5 +10,10 @@
         {
             return obj is CoapMessageOptionEmptyValue;
         }
+
+        public override int GetHashCode()
+        {
+            return 0;
+        }
     }
 }

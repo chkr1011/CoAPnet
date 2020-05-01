@@ -12,6 +12,7 @@ namespace CoAPnet.Extensions.DTLS
 {
     public sealed class DtlsCoapTransportLayer : ICoapTransportLayer
     {
+        static object _staticSyncRoot = new object();
         static bool _waherTypesInitialized;
 
         readonly BlockingCollection<byte[]> _inflightQueue = new BlockingCollection<byte[]>();
@@ -25,9 +26,15 @@ namespace CoAPnet.Extensions.DTLS
         {
             if (!_waherTypesInitialized)
             {
-                var assembly = Assembly.Load(new System.Reflection.AssemblyName("Waher.Security.DTLS"));
-                Waher.Runtime.Inventory.Types.Initialize(assembly);
-                _waherTypesInitialized = true;
+                lock (_staticSyncRoot)
+                {
+                    if (!_waherTypesInitialized)
+                    {
+                        var assembly = Assembly.Load(new AssemblyName("Waher.Security.DTLS"));
+                        Waher.Runtime.Inventory.Types.Initialize(assembly);
+                        _waherTypesInitialized = true;
+                    }
+                }
             }
         }
 
@@ -72,7 +79,7 @@ namespace CoAPnet.Extensions.DTLS
 
             _dtlsClient.Send(buffer.ToArray(), _connectOptions.EndPoint, _credentials, (s, e) =>
             {
-                promise.TrySetResult(e.Successful);
+                //promise.TrySetResult(e.Successful);
             }, null);
 
             // TODO: Check why the callback is only called for the first time.

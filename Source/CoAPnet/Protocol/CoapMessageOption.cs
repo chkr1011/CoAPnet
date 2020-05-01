@@ -35,5 +35,10 @@ namespace CoAPnet.Protocol
 
             return false;
         }
+
+        public override int GetHashCode()
+        {
+            return Number.GetHashCode();
+        }
     }
 }

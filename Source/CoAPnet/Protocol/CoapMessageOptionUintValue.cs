@@ -18,5 +18,10 @@
 
             return false;
         }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
     }
 }

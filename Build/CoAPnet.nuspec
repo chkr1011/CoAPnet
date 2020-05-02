@@ -3,13 +3,13 @@
   <metadata>
     <id>CoAPnet</id>
     <version>0.0.0</version>
-    <authors>Christian Kratky</authors>
+    <authors>The contributors of CoAPnet</authors>
     <owners>Christian Kratky</owners>
     <license type="file">LICENSE</license>
     <projectUrl>https://github.com/chkr1011/CoAPnet</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/chkr1011/CoAPnet/master/Images/Logo_128x128.png</iconUrl>
-    <icon>images\Logo_128x128.png</icon>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <!-- <icon>images\Logo_128x128.png</icon> -->
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>CoAPnet is a high performance .NET library for CoAP based communication. It provides a CoAP client and a CoAP server. It also has DTLS support out of the box.</description>
     <releaseNotes>
 [Core] Added low level client.

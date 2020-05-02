@@ -1,4 +1,4 @@
-﻿namespace CoAPnet.Protocol
+﻿namespace CoAPnet.Protocol.Options
 {
     public class CoapMessageOptionUintValue : CoapMessageOptionValue
     {
@@ -7,7 +7,10 @@
             Value = value;
         }
 
-        public uint Value { get; }
+        public uint Value
+        {
+            get;
+        }
 
         public override bool Equals(object obj)
         {

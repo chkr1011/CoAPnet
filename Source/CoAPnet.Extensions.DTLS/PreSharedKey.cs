@@ -2,8 +2,14 @@
 {
     public class PreSharedKey : IDtlsCredentials
     {
-        public byte[] Identity { get; set; }
+        public byte[] Identity
+        {
+            get; set;
+        }
 
-        public byte[] Key { get; set; }
+        public byte[] Key
+        {
+            get; set;
+        }
     }
 }

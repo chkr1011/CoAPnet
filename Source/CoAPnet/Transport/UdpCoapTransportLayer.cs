@@ -25,10 +25,6 @@ namespace CoAPnet.Transport
 
         public async Task<int> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
         {
-            // TODO: Replace with proper async implementation.
-            // The Tas.Run is required to let the current thread
-            // wait for messages in the UDP client.
-
             var receiveResult = await _udpClient.ReceiveAsync().ConfigureAwait(false);
             Array.Copy(receiveResult.Buffer, 0, buffer.Array, buffer.Offset, receiveResult.Buffer.Length);
 

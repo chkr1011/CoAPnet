@@ -1,4 +1,5 @@
 ﻿using CoAPnet.Protocol;
+using CoAPnet.Protocol.Options;
 using System;
 using System.Collections.Generic;
 
@@ -30,32 +31,32 @@ namespace CoAPnet.Client
 
         void ApplyUriHost(CoapRequest request, CoapMessage message)
         {
-            if (string.IsNullOrEmpty(request.UriHost))
+            if (string.IsNullOrEmpty(request.Options.UriHost))
             {
                 return;
             }
 
-            message.Options.Add(_optionFactory.CreateUriHost(request.UriHost));
+            message.Options.Add(_optionFactory.CreateUriHost(request.Options.UriHost));
         }
 
         void ApplyUriPort(CoapRequest request, CoapMessage message)
         {
-            if (!request.UriPort.HasValue)
+            if (!request.Options.UriPort.HasValue)
             {
                 return;
             }
 
-            message.Options.Add(_optionFactory.CreateUriPort((uint)request.UriPort.Value));
+            message.Options.Add(_optionFactory.CreateUriPort((uint)request.Options.UriPort.Value));
         }
 
         void ApplyUriPath(CoapRequest request, CoapMessage message)
         {
-            if (string.IsNullOrEmpty(request.UriPath))
+            if (string.IsNullOrEmpty(request.Options.UriPath))
             {
                 return;
             }
 
-            var paths = request.UriPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var paths = request.Options.UriPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var path in paths)
             {
@@ -65,12 +66,12 @@ namespace CoAPnet.Client
 
         void ApplyUriQuery(CoapRequest request, CoapMessage message)
         {
-            if (request.UriQuery == null)
+            if (request.Options.UriQuery == null)
             {
                 return;
             }
 
-            foreach (var query in request.UriQuery)
+            foreach (var query in request.Options.UriQuery)
             {
                 message.Options.Add(_optionFactory.CreateUriQuery(query));
             }

@@ -16,7 +16,7 @@ namespace CoAPnet.Client
 
         public CoapRequestBuilder WithPath(string value)
         {
-            _request.UriPath = value;
+            _request.Options.UriPath = value;
             return this;
         }
 
@@ -24,24 +24,24 @@ namespace CoAPnet.Client
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
 
-            if (_request.UriQuery == null)
+            if (_request.Options.UriQuery == null)
             {
-                _request.UriQuery = new List<string>();
+                _request.Options.UriQuery = new List<string>();
             }
 
-            _request.UriQuery.Add(value);
+            _request.Options.UriQuery.Add(value);
             return this;
         }
 
         public CoapRequestBuilder WithQuery(params string[] value)
         {
-            _request.UriQuery = value;
+            _request.Options.UriQuery = value;
             return this;
         }
 
         public CoapRequestBuilder WithQuery(ICollection<string> value)
         {
-            _request.UriQuery = value;
+            _request.Options.UriQuery = value;
             return this;
         }
 

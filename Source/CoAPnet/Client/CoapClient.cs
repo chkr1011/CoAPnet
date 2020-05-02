@@ -1,4 +1,5 @@
 ﻿using CoAPnet.Internal;
+using CoAPnet.Logging;
 using CoAPnet.LowLevelClient;
 using CoAPnet.MessageDispatcher;
 using System;
@@ -13,10 +14,16 @@ namespace CoAPnet.Client
         readonly CoapMessageToResponseConverter _messageToResponseConverter = new CoapMessageToResponseConverter();
         readonly CoapMessageDispatcher _messageDispatcher = new CoapMessageDispatcher();
         readonly CoapMessageIdProvider _messageIdProvider = new CoapMessageIdProvider();
+        readonly CoapNetLogger _logger;
 
         LowLevelCoapClient _lowLevelClient;
         CoapClientConnectOptions _connectOptions;
         CancellationTokenSource _cancellationToken;
+
+        public CoapClient(CoapNetLogger logger)
+        {
+            _logger = logger;
+        }
 
         public async Task ConnectAsync(CoapClientConnectOptions options, CancellationToken cancellationToken)
         {
@@ -26,7 +33,7 @@ namespace CoAPnet.Client
 
             _lowLevelClient?.Dispose();
 
-            _lowLevelClient = new LowLevelCoapClient();
+            _lowLevelClient = new LowLevelCoapClient(_logger);
 
             await _lowLevelClient.ConnectAsync(options, cancellationToken).ConfigureAwait(false);
             _cancellationToken = new CancellationTokenSource();
@@ -44,6 +51,7 @@ namespace CoAPnet.Client
             var responseAwaiter = _messageDispatcher.AddAwaiter(requestMessage.Id);
             await _lowLevelClient.SendAsync(requestMessage, cancellationToken);
 
+            // TODO: Add support for block transfer.
             var responseMessage = await responseAwaiter.WaitOneAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
 
             return _messageToResponseConverter.Convert(responseMessage);

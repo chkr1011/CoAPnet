@@ -1,4 +1,5 @@
 ﻿using CoAPnet.Protocol;
+using CoAPnet.Protocol.Options;
 using System;
 using System.Linq;
 
@@ -18,9 +19,9 @@ namespace CoAPnet.Client
             };
         }
 
-        CoapResposeOptions GetOptions(CoapMessage message)
+        CoapResponseOptions GetOptions(CoapMessage message)
         {
-            var options = new CoapResposeOptions();
+            var options = new CoapResponseOptions();
 
             var contentFormatOption = message.Options.FirstOrDefault(o => o.Number == (byte)CoapMessageOptionNumber.ContentFormat);
             if (contentFormatOption != null)
@@ -42,7 +43,7 @@ namespace CoAPnet.Client
             var eTagOption = message.Options.FirstOrDefault(o => o.Number == (byte)CoapMessageOptionNumber.ETag);
             if (eTagOption != null)
             {
-                options.ETag = ((CoapMessageOptionOpaqueValue)maxAgeOption.Value).Value;
+                options.ETag = ((CoapMessageOptionOpaqueValue)eTagOption.Value).Value;
             }
 
             return options;

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace CoAPnet.Protocol
+namespace CoAPnet.Protocol.Options
 {
     public class CoapMessageOptionOpaqueValue : CoapMessageOptionValue
     {
@@ -9,7 +9,10 @@ namespace CoAPnet.Protocol
             Value = value;
         }
 
-        public byte[] Value { get; }
+        public byte[] Value
+        {
+            get;
+        }
 
         public override bool Equals(object obj)
         {

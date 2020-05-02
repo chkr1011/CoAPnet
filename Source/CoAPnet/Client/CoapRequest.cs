@@ -1,27 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace CoAPnet.Client
 {
     public class CoapRequest
     {
-        public CoapRequestMethod Method { get; set; }
+        public CoapRequestMethod Method { get; set; } = CoapRequestMethod.Get;
 
-        /// <summary>
-        /// This is only required when accessing virtual servers.
-        /// </summary>
-        public string UriHost { get; set; }
+        public CoapRequestOptions Options { get; set; } = new CoapRequestOptions();
 
-        /// <summary>
-        /// This is only required when accessing virtual servers.
-        /// </summary>
-        public int? UriPort { get; set; }
-
-        public string UriPath { get; set; }
-
-        public ICollection<string> UriQuery { get; set; }
-
-        public ArraySegment<byte> Payload { get; set; }
+        public ArraySegment<byte> Payload
+        {
+            get; set;
+        }
     }
 }
 

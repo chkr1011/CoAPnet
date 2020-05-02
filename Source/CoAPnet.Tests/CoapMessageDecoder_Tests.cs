@@ -1,5 +1,7 @@
-﻿using CoAPnet.Protocol;
+﻿using CoAPnet.Logging;
+using CoAPnet.Protocol;
 using CoAPnet.Protocol.Encoding;
+using CoAPnet.Protocol.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Text;
@@ -125,7 +127,7 @@ namespace CoAPnet.Tests
             var messageEncoder = new CoapMessageEncoder();
             var messageBuffer = messageEncoder.Encode(message);
 
-            var messageDecoder = new CoapMessageDecoder();
+            var messageDecoder = new CoapMessageDecoder(new CoapNetLogger());
             var decodedMessage = messageDecoder.Decode(messageBuffer);
 
             Assert.AreEqual(message.Type, decodedMessage.Type);

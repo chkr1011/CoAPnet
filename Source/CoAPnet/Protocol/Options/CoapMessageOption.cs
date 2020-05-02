@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoAPnet.Protocol
+namespace CoAPnet.Protocol.Options
 {
     public sealed class CoapMessageOption
     {
@@ -12,9 +12,15 @@ namespace CoAPnet.Protocol
             Value = value;
         }
 
-        public byte Number { get; }
+        public byte Number
+        {
+            get;
+        }
 
-        public CoapMessageOptionValue Value { get; }
+        public CoapMessageOptionValue Value
+        {
+            get;
+        }
 
         public override bool Equals(object obj)
         {

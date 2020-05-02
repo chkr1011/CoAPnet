@@ -2,9 +2,9 @@
 
 namespace CoAPnet.Exceptions
 {
-    public class CoAPProtocolViolationException : Exception
+    public class CoapProtocolViolationException : Exception
     {
-        public CoAPProtocolViolationException(string message) : base(message)
+        public CoapProtocolViolationException(string message) : base(message)
         {
         }
     }

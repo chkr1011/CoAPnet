@@ -2,6 +2,9 @@
 {
     public class DtlsCoapTransportLayerOptions
     {
-        public IDtlsCredentials Credentials { get; set; }
+        public IDtlsCredentials Credentials
+        {
+            get; set;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CoAPnet.Exceptions;
+using CoAPnet.Protocol.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,7 +77,7 @@ namespace CoAPnet.Protocol.Encoding
                 }
                 else
                 {
-                    throw new CoAPProtocolViolationException("The specified option is not supported.");
+                    throw new CoapProtocolViolationException("The specified option is not supported.");
                 }
 
                 var length = value.Length;
@@ -149,7 +150,7 @@ namespace CoAPnet.Protocol.Encoding
                 };
             }
 
-            throw new CoAPProtocolViolationException("The value for the uint option is too long.");
+            throw new CoapProtocolViolationException("The value for the uint option is too long.");
         }
 
         void EncodeOptionValue(int value, out int nibble)
@@ -172,14 +173,14 @@ namespace CoAPnet.Protocol.Encoding
                 return;
             }
 
-            throw new CoAPProtocolViolationException("Option value is too long.");
+            throw new CoapProtocolViolationException("Option value is too long.");
         }
 
         void ThrowIfInvalid(CoapMessage message)
         {
             if (message.Token?.Length > 8)
             {
-                throw new CoAPProtocolViolationException("Message token is longer than 8 bytes.");
+                throw new CoapProtocolViolationException("Message token is longer than 8 bytes.");
             }
 
             ThrowIfInvalid(message.Code);
@@ -189,12 +190,12 @@ namespace CoAPnet.Protocol.Encoding
         {
             if (code.Class > 7)
             {
-                throw new CoAPProtocolViolationException("Code class is larget than 7.");
+                throw new CoapProtocolViolationException("Code class is larget than 7.");
             }
 
             if (code.Detail > 31)
             {
-                throw new CoAPProtocolViolationException("Code class is larget than 7.");
+                throw new CoapProtocolViolationException("Code class is larget than 7.");
             }
         }
     }

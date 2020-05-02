@@ -5,7 +5,10 @@ namespace CoAPnet.Client
 {
     public class CoapClientConnectOptionsBuilder
     {
-        readonly CoapClientConnectOptions _options = new CoapClientConnectOptions();
+        readonly CoapClientConnectOptions _options = new CoapClientConnectOptions
+        {
+            TransportLayer = new UdpCoapTransportLayer() // This is the protocols default transport.
+        };
 
         public CoapClientConnectOptionsBuilder WithHost(string value)
         {
@@ -29,8 +32,25 @@ namespace CoAPnet.Client
             return this;
         }
 
+        public CoapClientConnectOptionsBuilder WithUdpTransportLayer()
+        {
+            _options.TransportLayer = new UdpCoapTransportLayer();
+            return this;
+        }
+
+        public CoapClientConnectOptionsBuilder WithTcpTransportLayer()
+        {
+            _options.TransportLayer = new TcpCoapTransportLayer();
+            return this;
+        }
+
         public CoapClientConnectOptions Build()
         {
+            if (_options.TransportLayer == null)
+            {
+                throw new CoapClientConfigurationInvalidException("Transport layer is not set.", null);
+            }
+
             return _options;
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace CoAPnet.Protocol
+﻿namespace CoAPnet.Protocol.Options
 {
     public enum CoapMessageContentFormat
     {

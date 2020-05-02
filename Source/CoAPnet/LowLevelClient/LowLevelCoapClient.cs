@@ -1,5 +1,6 @@
 ﻿using CoAPnet.Client;
 using CoAPnet.Exceptions;
+using CoAPnet.Logging;
 using CoAPnet.Protocol;
 using CoAPnet.Protocol.Encoding;
 using CoAPnet.Transport;
@@ -13,7 +14,8 @@ namespace CoAPnet.LowLevelClient
     public sealed class LowLevelCoapClient : ILowLevelCoapClient
     {
         readonly CoapMessageEncoder _messageEncoder = new CoapMessageEncoder();
-        readonly CoapMessageDecoder _messageDecoder = new CoapMessageDecoder();
+        readonly CoapMessageDecoder _messageDecoder;
+        readonly CoapNetLogger _logger;
 
         // The size of the receive buffer is large enough so that a whole
         // UDP datagram will fit into the buffer at once.
@@ -21,6 +23,13 @@ namespace CoAPnet.LowLevelClient
 
         CoapClientConnectOptions _connectOptions;
         ICoapTransportLayer _transportLayer;
+
+        public LowLevelCoapClient(CoapNetLogger logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _messageDecoder = new CoapMessageDecoder(logger);
+        }
 
         public async Task ConnectAsync(CoapClientConnectOptions options, CancellationToken cancellationToken)
         {

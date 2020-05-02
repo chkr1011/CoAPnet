@@ -40,7 +40,10 @@ namespace CoAPnet.Extensions.DTLS
             }
         }
 
-        public IDtlsCredentials Credentials { get; set; }
+        public IDtlsCredentials Credentials
+        {
+            get; set;
+        }
 
         public Task ConnectAsync(CoapTransportLayerConnectOptions options, CancellationToken cancellationToken)
         {

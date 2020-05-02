@@ -1,4 +1,6 @@
 ﻿using CoAPnet.Exceptions;
+using CoAPnet.Logging;
+using CoAPnet.Protocol.Options;
 using System;
 using System.Collections.Generic;
 
@@ -7,6 +9,12 @@ namespace CoAPnet.Protocol.Encoding
     public sealed class CoapMessageDecoder
     {
         readonly CoapMessageOptionFactory _optionFactory = new CoapMessageOptionFactory();
+        readonly CoapNetLogger _logger;
+
+        public CoapMessageDecoder(CoapNetLogger logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
         // TODO: Consider creating "CoapMessageDecodeResult" which has Message (null or set) and "DecodeResult" as INTERFACE with all possible errors (VersionInvalidDecodeResult) etc.
         public CoapMessage Decode(ArraySegment<byte> buffer)
@@ -16,13 +24,13 @@ namespace CoAPnet.Protocol.Encoding
                 var version = reader.ReadBits(2);
                 if (version != 0x1)
                 {
-                    throw new CoAPProtocolViolationException("Version is not set to 1.");
+                    throw new CoapProtocolViolationException("Version is not set to 1.");
                 }
 
                 var type = reader.ReadBits(2);
                 if (type > 2)
                 {
-                    throw new CoAPProtocolViolationException("Type is invalid.");
+                    throw new CoapProtocolViolationException("Type is invalid.");
                 }
 
                 var tokenLength = reader.ReadBits(4);
@@ -85,7 +93,7 @@ namespace CoAPnet.Protocol.Encoding
                 }
                 else if (delta == 14)
                 {
-                    delta = reader.ReadBits(8) + 269;
+                    delta = reader.ReadBits(16) + 269;
                 }
 
                 if (length == 13)
@@ -94,7 +102,7 @@ namespace CoAPnet.Protocol.Encoding
                 }
                 else if (length == 14)
                 {
-                    length = reader.ReadBits(8) + 269;
+                    length = reader.ReadBits(16) + 269;
                 }
 
                 byte[] value = null;
@@ -151,7 +159,7 @@ namespace CoAPnet.Protocol.Encoding
 
             if (number == (int)CoapMessageOptionNumber.ContentFormat)
             {
-                return _optionFactory.CreateContentFormat((CoapMessageContentFormat)value[0]);
+                return _optionFactory.CreateContentFormat((CoapMessageContentFormat)DecodeUintOptionValue(value));
             }
 
             if (number == (int)CoapMessageOptionNumber.MaxAge)
@@ -189,11 +197,29 @@ namespace CoAPnet.Protocol.Encoding
                 return _optionFactory.CreateSize1(DecodeUintOptionValue(value));
             }
 
-            throw new NotSupportedException();
+            if (number == (int)CoapMessageOptionNumber.Block1)
+            {
+                return _optionFactory.CreateBlock1(DecodeUintOptionValue(value));
+            }
+
+            if (number == (int)CoapMessageOptionNumber.Block2)
+            {
+                return _optionFactory.CreateBlock2(DecodeUintOptionValue(value));
+            }
+
+            _logger.Warning(nameof(CoapMessageDecoder), "Invalid message: CoAP option number {0} not supported.", number);
+            throw new NotSupportedException($"CoAP option number {number} not supported.");
         }
 
         uint DecodeUintOptionValue(byte[] value)
         {
+            if (value == null || value.Length == 0)
+            {
+                // Assume the default value because the protocol is designed to not
+                // waste any byte so that leading 0 are also not transmitted etc.
+                return 0;
+            }
+
             if (value.Length == 1)
             {
                 return value[0];
@@ -214,7 +240,7 @@ namespace CoAPnet.Protocol.Encoding
                 return (uint)(value[0] << 24 | value[1] << 16 | value[2] << 8 | value[3]);
             }
 
-            throw new CoAPProtocolViolationException("The buffer for the uint option is too long.");
+            throw new CoapProtocolViolationException("The buffer for the uint option is too long.");
         }
     }
 }

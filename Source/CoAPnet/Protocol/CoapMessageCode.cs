@@ -8,9 +8,15 @@
             Detail = detail;
         }
 
-        public byte Class { get; }
+        public byte Class
+        {
+            get;
+        }
 
-        public byte Detail { get; }
+        public byte Detail
+        {
+            get;
+        }
 
         public override string ToString()
         {

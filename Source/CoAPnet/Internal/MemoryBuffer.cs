@@ -17,6 +17,11 @@ namespace CoAPnet.Internal
             _memoryStream = new MemoryStream(size);
         }
 
+        public void Write(byte buffer)
+        {
+            _memoryStream.WriteByte(buffer);
+        }
+
         public void Write(byte[] buffer)
         {
             if (buffer is null) throw new ArgumentNullException(nameof(buffer));

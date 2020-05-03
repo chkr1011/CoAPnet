@@ -6,6 +6,7 @@ namespace CoAPnet.Protocol.Encoding
     public sealed class CoapMessageReader : IDisposable
     {
         readonly MemoryStream _memoryStream;
+        readonly ArraySegment<byte> _buffer;
 
         int _bitOffset = -1;
         byte _byteCache = 0x0;
@@ -13,6 +14,7 @@ namespace CoAPnet.Protocol.Encoding
         public CoapMessageReader(ArraySegment<byte> buffer)
         {
             _memoryStream = new MemoryStream(buffer.Array, 0, buffer.Count, false);
+            _buffer = buffer;
         }
 
         public bool EndOfStream
@@ -25,10 +27,10 @@ namespace CoAPnet.Protocol.Encoding
 
         public int ReadBits(int count)
         {
-            // TODO: This needs optimization!
+            var result = 0;
 
             // Read each bit in backward order as per RFC.
-            var bits = new bool[count];
+            var j = count - 1;
             for (var i = 0; i < count; i++)
             {
                 if (_bitOffset < 0)
@@ -38,22 +40,11 @@ namespace CoAPnet.Protocol.Encoding
 
                 if ((_byteCache & (0x1 << _bitOffset)) > 0)
                 {
-                    bits[i] = true;
-                }
-
-                _bitOffset--;
-            }
-
-            var result = 0;
-            var j = 0;
-            for (var i = count - 1; i >= 0; i--)
-            {
-                if (bits[i])
-                {
                     result |= 0x1 << j;
                 }
 
-                j++;
+                j--;
+                _bitOffset--;
             }
 
             return result;
@@ -74,8 +65,7 @@ namespace CoAPnet.Protocol.Encoding
 
         public ArraySegment<byte> ReadToEnd()
         {
-            // TODO: Optimize this in order to avoid useless array allocations.
-            return new ArraySegment<byte>(_memoryStream.ToArray(), (int)_memoryStream.Position, (int)(_memoryStream.Length - _memoryStream.Position));
+            return new ArraySegment<byte>(_buffer.Array, (int)_memoryStream.Position, (int)(_memoryStream.Length - _memoryStream.Position));
         }
 
         public void Dispose()

@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using CoAPnet.Internal;
+using System;
 
 namespace CoAPnet.Protocol.Encoding
 {
     public sealed class CoapMessageWriter : IDisposable
     {
-        readonly MemoryStream _memoryStream = new MemoryStream(128);
+        readonly MemoryBuffer _memoryBuffer = new MemoryBuffer(128);
 
         int _bitOffset = 7;
         byte _byteCache = 0x0;
@@ -32,10 +32,7 @@ namespace CoAPnet.Protocol.Encoding
 
         public void WriteBytes(byte[] bytes)
         {
-            foreach (var @byte in bytes)
-            {
-                _memoryStream.WriteByte(@byte);
-            }
+            _memoryBuffer.Write(bytes);
         }
 
         public ArraySegment<byte> ToArray()
@@ -45,21 +42,17 @@ namespace CoAPnet.Protocol.Encoding
                 CommitByteCache();
             }
 
-#if NETSTANDARD2_0
-            return new ArraySegment<byte>(_memoryStream.GetBuffer(), 0, (int)_memoryStream.Length);
-#else
-            return new ArraySegment<byte>(_memoryStream.ToArray(), 0, (int)_memoryStream.Length);
-#endif
+            return _memoryBuffer.GetBuffer();
         }
 
         public void Dispose()
         {
-            _memoryStream.Dispose();
+            _memoryBuffer.Dispose();
         }
 
         void CommitByteCache()
         {
-            _memoryStream.WriteByte(_byteCache);
+            _memoryBuffer.Write(_byteCache);
             _bitOffset = 7;
             _byteCache = 0x0;
         }

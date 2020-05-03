@@ -7,7 +7,7 @@ namespace CoAPnet.Client
 {
     public sealed class CoapMessageToResponseConverter
     {
-        public CoapResponse Convert(CoapMessage message)
+        public CoapResponse Convert(CoapMessage message, ArraySegment<byte> payload)
         {
             if (message is null) throw new ArgumentNullException(nameof(message));
 
@@ -15,7 +15,7 @@ namespace CoAPnet.Client
             {
                 StatusCode = GetStatusCode(message),
                 Options = GetOptions(message),
-                Payload = message.Payload
+                Payload = payload
             };
         }
 

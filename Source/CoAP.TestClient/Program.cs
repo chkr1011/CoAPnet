@@ -13,8 +13,8 @@ namespace CoAP.TestClient
     {
         static async Task Main()
         {
-            //await Main2();
-            //return;
+            await Main2();
+            return;
 
             using (var coapClient = new CoapFactory().CreateClient())
             {
@@ -28,7 +28,7 @@ namespace CoAP.TestClient
                         .Build())
                     .Build();
 
-                await coapClient.ConnectAsync(connectOptions, CancellationToken.None);
+                await coapClient.ConnectAsync(connectOptions, CancellationToken.None).ConfigureAwait(false);
 
                 var request = new CoapRequestBuilder()
                     .WithMethod(CoapRequestMethod.Get)
@@ -87,7 +87,6 @@ namespace CoAP.TestClient
             return hex.ToString();
         }
 
-
         static async Task Main2()
         {
             var coapFactory = new CoapFactory();
@@ -101,7 +100,7 @@ namespace CoAP.TestClient
                     .WithHost("coap.me")
                     .Build();
 
-                await coapClient.ConnectAsync(connectOptions, CancellationToken.None);
+                await coapClient.ConnectAsync(connectOptions, CancellationToken.None).ConfigureAwait(false);
 
                 //// hello
 

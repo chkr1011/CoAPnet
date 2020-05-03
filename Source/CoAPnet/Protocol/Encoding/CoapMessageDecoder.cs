@@ -208,7 +208,10 @@ namespace CoAPnet.Protocol.Encoding
             }
 
             _logger.Warning(nameof(CoapMessageDecoder), "Invalid message: CoAP option number {0} not supported.", number);
-            throw new NotSupportedException($"CoAP option number {number} not supported.");
+
+            // We do not throw because new RFCs might use new options. We wrap unknown ones
+            // into a opaque value.
+            return new CoapMessageOption((byte)number, new CoapMessageOptionOpaqueValue(value));
         }
 
         uint DecodeUintOptionValue(byte[] value)

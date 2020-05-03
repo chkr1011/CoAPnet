@@ -1,4 +1,5 @@
 ﻿using CoAPnet.Transport;
+using System;
 
 namespace CoAPnet.Client
 {
@@ -10,6 +11,8 @@ namespace CoAPnet.Client
         }
 
         public int Port { get; set; } = 5683; // Default IANA port.
+
+        public TimeSpan CommunicationTimeout { get; set; } = TimeSpan.FromSeconds(10);
 
         public ICoapTransportLayer TransportLayer
         {

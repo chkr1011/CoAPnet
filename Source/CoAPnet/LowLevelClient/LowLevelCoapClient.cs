@@ -22,7 +22,7 @@ namespace CoAPnet.LowLevelClient
         readonly ArraySegment<byte> _receiveBuffer = new ArraySegment<byte>(new byte[65535]);
 
         CoapClientConnectOptions _connectOptions;
-        ICoapTransportLayer _transportLayer;
+        CoapTransportLayerAdapter _transportLayerAdapter;
 
         public LowLevelCoapClient(CoapNetLogger logger)
         {
@@ -34,14 +34,14 @@ namespace CoAPnet.LowLevelClient
         public async Task ConnectAsync(CoapClientConnectOptions options, CancellationToken cancellationToken)
         {
             _connectOptions = options ?? throw new ArgumentNullException(nameof(options));
-            _transportLayer = options.TransportLayer;
+            _transportLayerAdapter = new CoapTransportLayerAdapter(options.TransportLayer, _logger);
 
             var transportLayerConnectOptions = new CoapTransportLayerConnectOptions
             {
                 EndPoint = await ResolveIPEndPoint(options).ConfigureAwait(false)
             };
 
-            await _transportLayer.ConnectAsync(transportLayerConnectOptions, cancellationToken);
+            await _transportLayerAdapter.ConnectAsync(transportLayerConnectOptions, cancellationToken).ConfigureAwait(false);
         }
 
         public Task SendAsync(CoapMessage message, CancellationToken cancellationToken)
@@ -49,18 +49,18 @@ namespace CoAPnet.LowLevelClient
             if (message is null) throw new ArgumentNullException(nameof(message));
 
             var requestMessageBuffer = _messageEncoder.Encode(message);
-            return _transportLayer.SendAsync(requestMessageBuffer, cancellationToken);
+            return _transportLayerAdapter.SendAsync(requestMessageBuffer, cancellationToken);
         }
 
         public async Task<CoapMessage> ReceiveAsync(CancellationToken cancellationToken)
         {
-            var datagramLength = await _transportLayer.ReceiveAsync(_receiveBuffer, cancellationToken).ConfigureAwait(false);
+            var datagramLength = await _transportLayerAdapter.ReceiveAsync(_receiveBuffer, cancellationToken).ConfigureAwait(false);
             return _messageDecoder.Decode(new ArraySegment<byte>(_receiveBuffer.Array, 0, datagramLength));
         }
 
         public void Dispose()
         {
-            _transportLayer?.Dispose();
+            _transportLayerAdapter?.Dispose();
         }
 
         async Task<IPEndPoint> ResolveIPEndPoint(CoapClientConnectOptions connectOptions)

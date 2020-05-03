@@ -74,6 +74,7 @@ namespace CoAPnet.Protocol.Encoding
 
         public ArraySegment<byte> ReadToEnd()
         {
+            // TODO: Optimize this in order to avoid useless array allocations.
             return new ArraySegment<byte>(_memoryStream.ToArray(), (int)_memoryStream.Position, (int)(_memoryStream.Length - _memoryStream.Position));
         }
 

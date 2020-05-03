@@ -2,6 +2,7 @@
 using CoAPnet.Logging;
 using CoAPnet.LowLevelClient;
 using CoAPnet.MessageDispatcher;
+using CoAPnet.Protocol;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,15 +47,35 @@ namespace CoAPnet.Client
             if (request is null) throw new ArgumentNullException(nameof(request));
 
             var requestMessage = _requestToMessageConverter.Convert(request);
+
+            var responseMessage = await RequestAsync(requestMessage, cancellationToken).ConfigureAwait(false);
+
+            var payload = responseMessage.Payload;
+            if (CoapClientBlockTransferReceiver.IsBlockTransfer(responseMessage))
+            {
+                payload = await new CoapClientBlockTransferReceiver(requestMessage, responseMessage, this, _logger).ReceiveFullPayload(cancellationToken).ConfigureAwait(false);
+            }
+
+            return _messageToResponseConverter.Convert(responseMessage, payload);
+        }
+
+        internal async Task<CoapMessage> RequestAsync(CoapMessage requestMessage, CancellationToken cancellationToken)
+        {
+            if (requestMessage is null) throw new ArgumentNullException(nameof(requestMessage));
+
             requestMessage.Id = _messageIdProvider.Next();
 
             var responseAwaiter = _messageDispatcher.AddAwaiter(requestMessage.Id);
-            await _lowLevelClient.SendAsync(requestMessage, cancellationToken);
+            try
+            {
+                await _lowLevelClient.SendAsync(requestMessage, cancellationToken).ConfigureAwait(false);
 
-            // TODO: Add support for block transfer.
-            var responseMessage = await responseAwaiter.WaitOneAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
-
-            return _messageToResponseConverter.Convert(responseMessage);
+                return await responseAwaiter.WaitOneAsync(_connectOptions.CommunicationTimeout).ConfigureAwait(false);
+            }
+            finally
+            {
+                _messageDispatcher.RemoveAwaiter(requestMessage.Id);
+            }
         }
 
         public void Dispose()

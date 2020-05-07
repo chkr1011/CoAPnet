@@ -33,7 +33,10 @@ namespace CoAPnet.Client
 
         public async Task ConnectAsync(CoapClientConnectOptions options, CancellationToken cancellationToken)
         {
-            if (options is null) throw new ArgumentNullException(nameof(options));
+            if (options is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
             _connectOptions = options;
 
@@ -133,7 +136,14 @@ namespace CoAPnet.Client
             {
                 await _lowLevelClient.SendAsync(requestMessage, cancellationToken).ConfigureAwait(false);
 
-                return await responseAwaiter.WaitOneAsync(_connectOptions.CommunicationTimeout).ConfigureAwait(false);
+                var responseMessage = await responseAwaiter.WaitOneAsync(_connectOptions.CommunicationTimeout).ConfigureAwait(false);
+
+                if (responseMessage.Code == CoapMessageCodes.Empty)
+                {
+                    // TODO: Support message which are sent later (no piggybacking).
+                }
+
+                return responseMessage;
             }
             finally
             {

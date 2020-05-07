@@ -51,6 +51,11 @@ namespace CoAPnet.Client
 
         CoapResponseStatusCode GetStatusCode(CoapMessage message)
         {
+            if (message.Code.Equals(CoapMessageCodes.Empty))
+            {
+                return CoapResponseStatusCode.Empty;
+            }
+
             if (message.Code.Equals(CoapMessageCodes.Created))
             {
                 return CoapResponseStatusCode.Created;

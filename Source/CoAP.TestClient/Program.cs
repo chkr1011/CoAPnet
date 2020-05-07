@@ -13,8 +13,10 @@ namespace CoAP.TestClient
     {
         static async Task Main()
         {
-            //await Main2();
-            //return;
+            await Main2();
+
+            Console.WriteLine("Press any key to exit.");
+            Console.ReadLine();
 
             var coapFactory = new CoapFactory();
             coapFactory.DefaultLogger.RegisterSink(new CoapNetLoggerConsoleSink());
@@ -132,76 +134,75 @@ namespace CoAP.TestClient
 
                 await coapClient.ConnectAsync(connectOptions, CancellationToken.None).ConfigureAwait(false);
 
-                //// hello
-
-                //var request = new CoapRequestBuilder()
-                //    .WithMethod(CoapRequestMethod.Get)
-                //    .WithPath("hello")
-                //    .Build();
-
-                //var response = await coapClient.RequestAsync(request, CancellationToken.None);
-                //PrintResponse(response);
-
-                //// broken
-
-                //request = new CoapRequestBuilder()
-                //    .WithMethod(CoapRequestMethod.Get)
-                //    .WithPath("broken")
-                //    .Build();
-
-                //response = await coapClient.RequestAsync(request, CancellationToken.None);
-                //PrintResponse(response);
-
-                //// secret
-
-                //request = new CoapRequestBuilder()
-                //    .WithMethod(CoapRequestMethod.Get)
-                //    .WithPath("secret")
-                //    .Build();
-
-                //response = await coapClient.RequestAsync(request, CancellationToken.None);
-                //PrintResponse(response);
-
-                //// large-create
-
-                //request = new CoapRequestBuilder()
-                //    .WithMethod(CoapRequestMethod.Get)
-                //    .WithPath("large-create")
-                //    .Build();
-
-                //response = await coapClient.RequestAsync(request, CancellationToken.None);
-                //PrintResponse(response);
-
-                //// location1/location2/location3
-
-                //request = new CoapRequestBuilder()
-                //    .WithMethod(CoapRequestMethod.Get)
-                //    .WithPath("location1/location2/location3")
-                //    .Build();
-
-                //response = await coapClient.RequestAsync(request, CancellationToken.None);
-                //PrintResponse(response);
-
-                // large
+                // separate
 
                 var request = new CoapRequestBuilder()
                     .WithMethod(CoapRequestMethod.Get)
-                    .WithPath("large")
+                    .WithPath("separate")
                     .Build();
 
                 var response = await coapClient.RequestAsync(request, CancellationToken.None);
                 PrintResponse(response);
 
-                //// separate
+                // hello
 
-                //request = new CoapRequestBuilder()
-                //    .WithMethod(CoapRequestMethod.Get)
-                //    .WithPath("separate")
-                //    .Build();
+                request = new CoapRequestBuilder()
+                    .WithMethod(CoapRequestMethod.Get)
+                    .WithPath("hello")
+                    .Build();
 
-                //response = await coapClient.RequestAsync(request, CancellationToken.None);
-                //PrintResponse(response);
+                response = await coapClient.RequestAsync(request, CancellationToken.None);
+                PrintResponse(response);
 
+                // broken
+
+                request = new CoapRequestBuilder()
+                    .WithMethod(CoapRequestMethod.Get)
+                    .WithPath("broken")
+                    .Build();
+
+                response = await coapClient.RequestAsync(request, CancellationToken.None);
+                PrintResponse(response);
+
+                // secret
+
+                request = new CoapRequestBuilder()
+                    .WithMethod(CoapRequestMethod.Get)
+                    .WithPath("secret")
+                    .Build();
+
+                response = await coapClient.RequestAsync(request, CancellationToken.None);
+                PrintResponse(response);
+
+                // large-create
+
+                request = new CoapRequestBuilder()
+                    .WithMethod(CoapRequestMethod.Get)
+                    .WithPath("large-create")
+                    .Build();
+
+                response = await coapClient.RequestAsync(request, CancellationToken.None);
+                PrintResponse(response);
+
+                // location1/location2/location3
+
+                request = new CoapRequestBuilder()
+                    .WithMethod(CoapRequestMethod.Get)
+                    .WithPath("location1/location2/location3")
+                    .Build();
+
+                response = await coapClient.RequestAsync(request, CancellationToken.None);
+                PrintResponse(response);
+
+                // large
+
+                request = new CoapRequestBuilder()
+                    .WithMethod(CoapRequestMethod.Get)
+                    .WithPath("large")
+                    .Build();
+
+                response = await coapClient.RequestAsync(request, CancellationToken.None);
+                PrintResponse(response);
 
                 await Task.Delay(TimeSpan.FromSeconds(10));
             }

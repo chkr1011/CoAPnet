@@ -16,7 +16,6 @@ namespace CoAPnet.Tests
         public void Encode_Simple_Get_Request()
         {
             var expected = Convert.FromBase64String("QAHLDnIWEP9wYXlsb2Fk");
-
             var optionBuilder = new CoapMessageOptionFactory();
 
             var message = new CoapMessage

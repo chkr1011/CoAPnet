@@ -2,6 +2,8 @@
 {
     public enum CoapResponseStatusCode
     {
+        Empty = 0,
+
         Created = 201,
         Deleted = 202,
         Valid = 203,

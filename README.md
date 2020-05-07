@@ -24,37 +24,21 @@ CoAPnet is a high performance .NET library for CoAPnet based communication. It p
 ### General
 
 * Async support
-* DTLS (up to 1.2, powered by _Waher.Security.DTLS_) support for client and server
+* DTLS (up to 1.2) support for client and server
 * TLS 1.2 support for client and server (but not UWP servers)
 * Extensible communication channels (e.g. In-Memory, TCP, TCP+TLS, UDP, UDP+TLS)
 * Lightweight (only the low level implementation of CoAPnet, no overhead)
-* Performance optimized (processing x / second)*
+* Performance optimized
 * Interfaces included for mocking and testing
 * Access to internal trace messages
-* Unit tested (~x tests)
+* Unit tested
 * No external dependencies
-
-\* Tested on local machine (Intel i7 8700K) with CoAP client and server running in the same process using the TCP channel. The app for verification is part of this repository and stored in _XX_.
 
 ### Client
 
 * Communication via TCP (+TLS) or UDP (+DTLS) supported
 * Included core _LowLevelCoAPClient_ with low level functionality
 * Block transfer is supported
-
-### Server
-
-xxx
-
-## CoAPnet Server
-
-_CoAPnet Server_ is a standalone cross platform CoAP server basing on this library. It has the following features.
-* Running portable (no installation required)
-* Runs und Windows, Linux, macOS, Raspberry Pi
-* Python scripting support for manipulating messages, validation of clients, building business logic etc.
-* Supports UDP and TCP (with and without TLS/DTLS) connections
-* Provides a HTTP based API (including Swagger endpoint)
-* Extensive configuration parameters and customization supported
 
 ## Supported frameworks
 

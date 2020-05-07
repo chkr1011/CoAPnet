@@ -13,8 +13,8 @@ namespace CoAP.TestClient
     {
         static async Task Main()
         {
-            await Main2();
-            return;
+            //await Main2();
+            //return;
 
             using (var coapClient = new CoapFactory().CreateClient())
             {

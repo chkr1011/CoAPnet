@@ -1,10 +1,7 @@
-﻿using CoAPnet.Exceptions;
-using CoAPnet.Transport;
+﻿using CoAPnet.Transport;
+using Org.BouncyCastle.Crypto.Tls;
+using Org.BouncyCastle.Security;
 using System;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Net.Sockets;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,145 +9,52 @@ namespace CoAPnet.Extensions.DTLS
 {
     public sealed class DtlsCoapTransportLayer : ICoapTransportLayer
     {
-        static object _staticSyncRoot = new object();
-        static bool _waherTypesInitialized;
-
-        readonly BlockingCollection<byte[]> _inflightQueue = new BlockingCollection<byte[]>();
-
-        UdpClient _udpClient;
-        Waher.Security.DTLS.DtlsOverUdp _dtlsClient;
-        CoapTransportLayerConnectOptions _connectOptions;
-        Waher.Security.DTLS.IDtlsCredentials _credentials;
-        bool _connectionTested;
-        bool _connectionWorks;
-
-        public DtlsCoapTransportLayer()
-        {
-            if (!_waherTypesInitialized)
-            {
-                lock (_staticSyncRoot)
-                {
-                    if (!_waherTypesInitialized)
-                    {
-                        var assembly = Assembly.Load(new AssemblyName("Waher.Security.DTLS"));
-                        Waher.Runtime.Inventory.Types.Initialize(assembly);
-                        _waherTypesInitialized = true;
-                    }
-                }
-            }
-        }
+        UdpTransport _udpTransport;
+        DtlsTransport _dtlsTransport;
 
         public IDtlsCredentials Credentials
         {
             get; set;
         }
 
-        public Task ConnectAsync(CoapTransportLayerConnectOptions options, CancellationToken cancellationToken)
+        public DtlsVersion DtlsVersion
         {
-            if (options is null) throw new ArgumentNullException(nameof(options));
+            get; set;
+        } = DtlsVersion.V1_2;
 
-            _connectOptions = options;
+        public Task ConnectAsync(CoapTransportLayerConnectOptions connectOptions, CancellationToken cancellationToken)
+        {
+            _udpTransport = new UdpTransport(connectOptions);
 
-            Dispose();
-
-            ConvertCredentials();
-
-            // ! Match the local address family with the address family of the host!
-            _udpClient = new UdpClient(0, _connectOptions.EndPoint.AddressFamily);
-            _dtlsClient = new Waher.Security.DTLS.DtlsOverUdp(_udpClient, Waher.Security.DTLS.DtlsMode.Client, null, null);
-            _dtlsClient.OnDatagramReceived += OnDatagramReceived;
+            var clientProtocol = new DtlsClientProtocol(new SecureRandom());
+            var client = new DtlsClient((PreSharedKey)Credentials);
+            _dtlsTransport = clientProtocol.Connect(client, _udpTransport);
 
             return Task.FromResult(0);
         }
 
         public Task<int> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
         {
-            // TODO: Replace with proper async implementation.
-            // The Tas.Run is required to let the current thread
-            // wait for messages in the UDP client.
-            return Task.Run(() =>
+            int received;
+            do
             {
-                var datagram = _inflightQueue.Take(cancellationToken);
-                Array.Copy(datagram, 0, buffer.Array, buffer.Offset, datagram.Length);
-                return Task.FromResult(datagram.Length);
-            });
+                received = _dtlsTransport.Receive(buffer.Array, buffer.Offset, buffer.Count, 100);
+            }
+            while (received == 0 && !cancellationToken.IsCancellationRequested);
+
+            return Task.FromResult(received);
         }
 
-        public async Task SendAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
+        public Task SendAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
         {
-            ThrowIfNotConnected();
-
-            if (!_connectionTested)
-            {
-                _connectionTested = true;
-
-                var promise = new TaskCompletionSource<bool>();
-
-                _dtlsClient.Send(buffer.ToArray(), _connectOptions.EndPoint, _credentials, (s, e) =>
-                {
-                    // This only works the first time.
-                    _connectionWorks = e.Successful;
-                    promise.TrySetResult(e.Successful);
-                }, null);
-
-                var result = await promise.Task.ConfigureAwait(false);
-
-                if (!result)
-                {
-                    throw new CoapCommunicationException("Sending CoAP message over DTLS failed.", null);
-                }
-
-                return;
-            }
-
-            if (!_connectionWorks)
-            {
-                throw new CoapCommunicationException("Sending CoAP message over DTLS failed.", null);
-            }
-
-            _dtlsClient.Send(buffer.ToArray(), _connectOptions.EndPoint, _credentials, (s, e) =>
-            {
-            }, null);
+            _dtlsTransport.Send(buffer.Array, buffer.Offset, buffer.Count);
+            return Task.FromResult(0);
         }
 
         public void Dispose()
         {
-            if (_dtlsClient != null)
-            {
-                _dtlsClient.OnDatagramReceived -= OnDatagramReceived;
-                _dtlsClient.Dispose();
-            }
-
-            _udpClient?.Dispose();
-        }
-
-        void ConvertCredentials()
-        {
-            if (Credentials == null)
-            {
-                return;
-            }
-
-            if (Credentials is PreSharedKey psk)
-            {
-                _credentials = new Waher.Security.DTLS.PresharedKey(psk.Identity, psk.Key);
-                return;
-            }
-
-            throw new NotSupportedException();
-        }
-
-        void OnDatagramReceived(object sender, Waher.Security.DTLS.Events.UdpDatagramEventArgs e)
-        {
-            _inflightQueue.Add(e.Datagram);
-        }
-
-        void ThrowIfNotConnected()
-        {
-            if (_dtlsClient == null)
-            {
-                throw new InvalidOperationException("The CoAP transport layer is not connected.");
-            }
+            _dtlsTransport?.Close();
+            _udpTransport?.Dispose();
         }
     }
 }

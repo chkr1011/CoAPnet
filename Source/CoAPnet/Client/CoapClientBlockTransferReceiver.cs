@@ -63,6 +63,8 @@ namespace CoAPnet.Client
                 {
                     // Patch Block1 so that we get the next chunk.
                     receivedBlock2OptionValue.Number++;
+
+                    // TODO: Avoid setting value. Create new instead.
                     requestBlock2OptionValue.Value = _blockValueEncoder.Encode(receivedBlock2OptionValue);
 
                     var response = await _client.RequestAsync(requestMessage, cancellationToken).ConfigureAwait(false);

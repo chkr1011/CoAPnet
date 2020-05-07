@@ -20,6 +20,7 @@ CoAPnet is a high performance .NET library for CoAPnet based communication. It p
 
 * Core protocol (RFC 7252)
 * Block transfer (RFC 7959)
+* Observe (RFC 7641)
 
 ### General
 

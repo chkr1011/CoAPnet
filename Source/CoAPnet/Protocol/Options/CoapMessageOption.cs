@@ -19,7 +19,7 @@ namespace CoAPnet.Protocol.Options
 
         public CoapMessageOptionValue Value
         {
-            get;
+            get; set;
         }
 
         public override bool Equals(object obj)

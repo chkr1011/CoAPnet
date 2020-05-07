@@ -207,6 +207,11 @@ namespace CoAPnet.Protocol.Encoding
                 return _optionFactory.CreateBlock2(DecodeUintOptionValue(value));
             }
 
+            if (number == (int)CoapMessageOptionNumber.Observe)
+            {
+                return _optionFactory.CreateObserve(DecodeUintOptionValue(value));
+            }
+
             _logger.Warning(nameof(CoapMessageDecoder), "Invalid message: CoAP option number {0} not supported.", number);
 
             // We do not throw because new RFCs might use new options. We wrap unknown ones

@@ -20,17 +20,18 @@ namespace CoAPnet.MessageDispatcher
             _awaiters.Clear();
         }
 
-        public void Dispatch(CoapMessage message)
+        public bool TryDispatch(CoapMessage message)
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
 
             if (_awaiters.TryRemove(message.Id, out var awaiter))
             {
                 awaiter.Complete(message);
-                return;
+                return true;
             }
 
-            // TODO: Process messages which are sent out of request/reply pattern.
+            // TODO: Distinguish between observed messages and out of date responses (CancellationToken etc.)
+            return false;
         }
 
         public void Reset()

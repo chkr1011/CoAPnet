@@ -21,6 +21,9 @@
 
         // RFC 7959
         Block1 = 27,
-        Block2 = 23
+        Block2 = 23,
+
+        // RFC 7641
+        Observe = 6
     }
 }

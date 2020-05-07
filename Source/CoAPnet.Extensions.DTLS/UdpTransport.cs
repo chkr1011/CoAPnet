@@ -1,7 +1,6 @@
 ﻿using CoAPnet.Transport;
 using Org.BouncyCastle.Crypto.Tls;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 
@@ -10,14 +9,13 @@ namespace CoAPnet.Extensions.DTLS
     public sealed class UdpTransport : DatagramTransport, IDisposable
     {
         readonly CoapTransportLayerConnectOptions _connectOptions;
-
-        readonly UdpClient _udpClient;
+        readonly Socket _socket;
 
         public UdpTransport(CoapTransportLayerConnectOptions connectOptions)
         {
             _connectOptions = connectOptions ?? throw new ArgumentNullException(nameof(connectOptions));
 
-            _udpClient = new UdpClient(0, connectOptions.EndPoint.AddressFamily);
+            _socket = new Socket(connectOptions.EndPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
         }
 
         public int GetReceiveLimit()
@@ -32,14 +30,17 @@ namespace CoAPnet.Extensions.DTLS
 
         public int Receive(byte[] buf, int off, int len, int waitMillis)
         {
+            if (buf is null)
+            {
+                throw new ArgumentNullException(nameof(buf));
+            }
+
             try
             {
-                var remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                var datagram = _udpClient.Receive(ref remoteEndPoint);
+                EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                var datagramLength = _socket.ReceiveFrom(buf, off, len, SocketFlags.None, ref remoteEndPoint);
 
-                Array.Copy(datagram, 0, buf, off, datagram.Length);
-
-                return datagram.Length;
+                return datagramLength;
             }
             catch (SocketException)
             {
@@ -53,21 +54,17 @@ namespace CoAPnet.Extensions.DTLS
 
         public void Send(byte[] buf, int off, int len)
         {
-            if (off == 0)
+            if (buf is null)
             {
-                _udpClient.Send(buf, len, _connectOptions.EndPoint);
+                throw new ArgumentNullException(nameof(buf));
             }
-            else
-            {
-                var segment = new ArraySegment<byte>(buf, off, len);
-                var buffer2 = segment.ToArray();
-                _udpClient.Send(buffer2, buffer2.Length, _connectOptions.EndPoint);
-            }
+
+            _socket.SendTo(buf, off, len, SocketFlags.None, _connectOptions.EndPoint);
         }
 
         public void Dispose()
         {
-            _udpClient?.Dispose();
+            _socket?.Dispose();
         }
 
         public void Close()

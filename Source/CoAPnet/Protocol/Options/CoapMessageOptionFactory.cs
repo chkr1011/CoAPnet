@@ -27,6 +27,11 @@
             return new CoapMessageOption((int)CoapMessageOptionNumber.UriPort, new CoapMessageOptionUintValue(value));
         }
 
+        public CoapMessageOption CreateObserve(uint value)
+        {
+            return new CoapMessageOption((int)CoapMessageOptionNumber.Observe, new CoapMessageOptionUintValue(value));
+        }
+
         public CoapMessageOption CreateLocationPath(string value)
         {
             return new CoapMessageOption((int)CoapMessageOptionNumber.LocationPath, new CoapMessageOptionStringValue(value));

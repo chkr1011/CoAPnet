@@ -1,19 +1,34 @@
 ﻿using Org.BouncyCastle.Crypto.Tls;
+using System;
 
 namespace CoAPnet.Extensions.DTLS
 {
-    public class DtlsClient : DefaultTlsClient
+    public partial class DtlsClient : DefaultTlsClient
     {
+        readonly ProtocolVersion _protocolVersion;
         readonly PreSharedKey _preSharedKey;
 
-        public DtlsClient(PreSharedKey preSharedKey)
+        public DtlsClient(ProtocolVersion protocolVersion, PreSharedKey preSharedKey)
         {
-            _preSharedKey = preSharedKey;
+            _protocolVersion = protocolVersion ?? throw new ArgumentNullException(nameof(protocolVersion));
+            _preSharedKey = preSharedKey ?? throw new ArgumentNullException(nameof(preSharedKey));
         }
 
-        public override ProtocolVersion MinimumVersion => ProtocolVersion.DTLSv12;
+        public override ProtocolVersion MinimumVersion
+        {
+            get
+            {
+                return _protocolVersion;
+            }
+        }
 
-        public override ProtocolVersion ClientVersion => ProtocolVersion.DTLSv12;
+        public override ProtocolVersion ClientVersion
+        {
+            get
+            {
+                return _protocolVersion;
+            }
+        }
 
         public override int[] GetCipherSuites()
         {
@@ -65,34 +80,6 @@ namespace CoAPnet.Extensions.DTLS
         public override TlsAuthentication GetAuthentication()
         {
             return null;
-        }
-
-        private class PreSharedKeyWrapper : TlsPskIdentity
-        {
-            readonly PreSharedKey _preSharedKey;
-
-            public PreSharedKeyWrapper(PreSharedKey preSharedKey)
-            {
-                _preSharedKey = preSharedKey ?? throw new System.ArgumentNullException(nameof(preSharedKey));
-            }
-
-            public byte[] GetPsk()
-            {
-                return _preSharedKey.Key;
-            }
-
-            public byte[] GetPskIdentity()
-            {
-                return _preSharedKey.Identity;
-            }
-
-            public void NotifyIdentityHint(byte[] psk_identity_hint)
-            {
-            }
-
-            public void SkipIdentityHint()
-            {
-            }
         }
     }
 }

@@ -16,7 +16,10 @@ namespace CoAP.TestClient
             //await Main2();
             //return;
 
-            using (var coapClient = new CoapFactory().CreateClient())
+            var coapFactory = new CoapFactory();
+            coapFactory.DefaultLogger.RegisterSink(new CoapNetLoggerConsoleSink());
+
+            using (var coapClient = coapFactory.CreateClient())
             {
                 Console.WriteLine("< CONNECTING...");
 
@@ -54,10 +57,37 @@ namespace CoAP.TestClient
 
                 response = await coapClient.RequestAsync(request, CancellationToken.None).ConfigureAwait(false);
                 PrintResponse(response);
+
+                var observeOptions = new CoapObserveOptionsBuilder()
+                    .WithPath("15001/65550")
+                    .WithResponseHandler(new ResponseHandler())
+                    .Build();
+
+                var observeResponse = await coapClient.ObserveAsync(observeOptions, CancellationToken.None).ConfigureAwait(false);
+                PrintResponse(observeResponse.Response);
+
+                Console.WriteLine("Observed messages for lamp!");
+
+                Console.WriteLine("Press any key to unobserve.");
+                Console.ReadLine();
+
+                await coapClient.StopObservationAsync(observeResponse, CancellationToken.None).ConfigureAwait(false);
+
+                Console.WriteLine("Press any key to exit.");
+                Console.ReadLine();
             }
         }
 
-        static void PrintResponse(CoapResponse response)
+        class ResponseHandler : ICoapResponseHandler
+        {
+            public Task HandleResponseAsync(HandleResponseContext context)
+            {
+                PrintResponse(context.Response);
+                return Task.CompletedTask;
+            }
+        }
+
+        public static void PrintResponse(CoapResponse response)
         {
             Console.WriteLine("> RESPONSE");
             Console.WriteLine("   + Status         = " + response.StatusCode);

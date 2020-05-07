@@ -27,7 +27,7 @@ namespace CoAPnet.Extensions.DTLS
             _udpTransport = new UdpTransport(connectOptions);
 
             var clientProtocol = new DtlsClientProtocol(new SecureRandom());
-            var client = new DtlsClient((PreSharedKey)Credentials);
+            var client = new DtlsClient(ConvertProtocolVersion(DtlsVersion), (PreSharedKey)Credentials);
             _dtlsTransport = clientProtocol.Connect(client, _udpTransport);
 
             return Task.FromResult(0);
@@ -55,6 +55,21 @@ namespace CoAPnet.Extensions.DTLS
         {
             _dtlsTransport?.Close();
             _udpTransport?.Dispose();
+        }
+
+        ProtocolVersion ConvertProtocolVersion(DtlsVersion dtlsVersion)
+        {
+            if (dtlsVersion == DtlsVersion.V1_0)
+            {
+                return ProtocolVersion.DTLSv10;
+            }
+
+            if (dtlsVersion == DtlsVersion.V1_2)
+            {
+                return ProtocolVersion.DTLSv12;
+            }
+
+            throw new NotSupportedException();
         }
     }
 }

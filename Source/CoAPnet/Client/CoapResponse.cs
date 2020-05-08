@@ -14,7 +14,7 @@ namespace CoAPnet.Client
             get; set;
         }
 
-        public ArraySegment<byte> Payload
+        public byte[] Payload
         {
             get; set;
         }

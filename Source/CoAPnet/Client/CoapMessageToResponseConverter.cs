@@ -15,7 +15,7 @@ namespace CoAPnet.Client
             {
                 StatusCode = GetStatusCode(message),
                 Options = GetOptions(message),
-                Payload = payload
+                Payload = payload.ToArray(),
             };
         }
 

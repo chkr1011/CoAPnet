@@ -5,44 +5,10 @@ namespace CoAPnet.Client
 {
     public class CoapClientConnectOptionsBuilder
     {
-        readonly CoapClientConnectOptions _options = new CoapClientConnectOptions
+        private readonly CoapClientConnectOptions _options = new CoapClientConnectOptions
         {
             TransportLayer = new UdpCoapTransportLayer() // This is the protocols default transport.
         };
-
-        public CoapClientConnectOptionsBuilder WithHost(string value)
-        {
-            if (value is null) throw new ArgumentNullException(nameof(value));
-
-            _options.Host = value;
-            return this;
-        }
-
-        public CoapClientConnectOptionsBuilder WithPort(int value)
-        {
-            _options.Port = value;
-            return this;
-        }
-
-        public CoapClientConnectOptionsBuilder WithTransportLayer(ICoapTransportLayer value)
-        {
-            if (value is null) throw new ArgumentNullException(nameof(value));
-
-            _options.TransportLayer = value;
-            return this;
-        }
-
-        public CoapClientConnectOptionsBuilder WithUdpTransportLayer()
-        {
-            _options.TransportLayer = new UdpCoapTransportLayer();
-            return this;
-        }
-
-        public CoapClientConnectOptionsBuilder WithTcpTransportLayer()
-        {
-            _options.TransportLayer = new TcpCoapTransportLayer();
-            return this;
-        }
 
         public CoapClientConnectOptions Build()
         {
@@ -52,6 +18,36 @@ namespace CoAPnet.Client
             }
 
             return _options;
+        }
+
+        public CoapClientConnectOptionsBuilder WithHost(string value)
+        {
+            _options.Host = value ?? throw new ArgumentNullException(nameof(value));
+            return this;
+        }
+
+        public CoapClientConnectOptionsBuilder WithPort(int value)
+        {
+            _options.Port = value;
+            return this;
+        }
+
+        public CoapClientConnectOptionsBuilder WithTcpTransportLayer()
+        {
+            _options.TransportLayer = new TcpCoapTransportLayer();
+            return this;
+        }
+
+        public CoapClientConnectOptionsBuilder WithTransportLayer(ICoapTransportLayer value)
+        {
+            _options.TransportLayer = value ?? throw new ArgumentNullException(nameof(value));
+            return this;
+        }
+
+        public CoapClientConnectOptionsBuilder WithUdpTransportLayer()
+        {
+            _options.TransportLayer = new UdpCoapTransportLayer();
+            return this;
         }
     }
 }

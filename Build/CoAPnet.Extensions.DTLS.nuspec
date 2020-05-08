@@ -20,6 +20,9 @@
         <dependency id="NETStandard.Library" version="2.0.0" />
         <dependency id="Portable.BouncyCastle" version="1.8.6.7" />
       </group>
+      <group targetFramework="net452">
+        <dependency id="Portable.BouncyCastle" version="1.8.6.7" />
+      </group>
     </dependencies>
   </metadata>
 
@@ -33,5 +36,7 @@
     <!-- .NET Standard 2.0 -->
     <file src="..\Source\CoAPnet.Extensions.DTLS\bin\Release\netstandard2.0\CoAPnet.Extensions.DTLS.*" target="lib\netstandard2.0\"/>
 
+    <!-- .NET Framework -->
+    <file src="..\Source\CoAPnet.Extensions.DTLS\bin\Release\net452\CoAPnet.Extensions.DTLS.*" target="lib\net452\"/>
   </files>
 </package>

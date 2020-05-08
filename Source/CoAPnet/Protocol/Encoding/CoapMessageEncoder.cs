@@ -8,6 +8,8 @@ namespace CoAPnet.Protocol.Encoding
 {
     public sealed class CoapMessageEncoder
     {
+        readonly byte[] EmptyArray = new byte[0];
+
         public ArraySegment<byte> Encode(CoapMessage message)
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
@@ -35,8 +37,8 @@ namespace CoAPnet.Protocol.Encoding
 
                 if (message.Payload.Count > 0)
                 {
-                    writer.WriteBits(0xFF, 8);// Payload Marker
-                    writer.WriteBytes(message.Payload.ToArray());
+                    writer.WriteByte(0xFF);// Payload Marker
+                    writer.WriteBytes(message.Payload);
                 }
 
                 return writer.ToArray();
@@ -61,7 +63,7 @@ namespace CoAPnet.Protocol.Encoding
 
                 if (option.Value is CoapMessageOptionEmptyValue)
                 {
-                    value = new byte[0];
+                    value = EmptyArray;
                 }
                 else if (option.Value is CoapMessageOptionUintValue uintValue)
                 {

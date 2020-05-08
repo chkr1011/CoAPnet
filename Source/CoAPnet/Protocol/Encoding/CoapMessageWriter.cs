@@ -1,5 +1,6 @@
 ﻿using CoAPnet.Internal;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace CoAPnet.Protocol.Encoding
 {
@@ -30,7 +31,17 @@ namespace CoAPnet.Protocol.Encoding
             }
         }
 
+        public void WriteByte(byte @byte)
+        {
+            _memoryBuffer.Write(@byte);
+        }
+
         public void WriteBytes(byte[] bytes)
+        {
+            _memoryBuffer.Write(bytes);
+        }
+
+        public void WriteBytes(ArraySegment<byte> bytes)
         {
             _memoryBuffer.Write(bytes);
         }
@@ -50,6 +61,7 @@ namespace CoAPnet.Protocol.Encoding
             _memoryBuffer.Dispose();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void CommitByteCache()
         {
             _memoryBuffer.Write(_byteCache);

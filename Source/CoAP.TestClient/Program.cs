@@ -13,10 +13,10 @@ namespace CoAP.TestClient
     {
         static async Task Main()
         {
-            await Main2();
+            //await Main2();
 
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadLine();
+            //Console.WriteLine("Press any key to exit.");
+            //Console.ReadLine();
 
             var coapFactory = new CoapFactory();
             coapFactory.DefaultLogger.RegisterSink(new CoapNetLoggerConsoleSink());
@@ -28,12 +28,14 @@ namespace CoAP.TestClient
                 var connectOptions = new CoapClientConnectOptionsBuilder()
                     .WithHost("GW-B8D7AF2B3EA3.fritz.box")
                     .WithPort(5684)
-                    .WithDtlsTransportLayer(new DtlsCoapTransportLayerOptionsBuilder()
-                        .WithPreSharedKey("IDENTITY", "lqxbBH6o2eAKSo5A")
-                        .Build())
+                    .WithDtlsTransportLayer(o =>
+                        o.WithPreSharedKey("IDENTITY", "lqxbBH6o2eAKSo5A"))
                     .Build();
 
-                await coapClient.ConnectAsync(connectOptions, CancellationToken.None).ConfigureAwait(false);
+                using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+                {
+                    await coapClient.ConnectAsync(connectOptions, cancellationTokenSource.Token).ConfigureAwait(false);
+                }
 
                 var request = new CoapRequestBuilder()
                     .WithMethod(CoapRequestMethod.Get)
@@ -97,7 +99,7 @@ namespace CoAP.TestClient
             Console.WriteLine("   + Content format = " + response.Options.ContentFormat);
             Console.WriteLine("   + Max age        = " + response.Options.MaxAge);
             Console.WriteLine("   + E tag          = " + ByteArrayToString(response.Options.ETag));
-            Console.WriteLine("   + Payload        = " + Encoding.UTF8.GetString(response.Payload.ToArray()));
+            Console.WriteLine("   + Payload        = " + Encoding.UTF8.GetString(response.Payload));
             Console.WriteLine();
         }
 

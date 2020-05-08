@@ -1,5 +1,5 @@
 ﻿[*.cs]
-csharp_prefer_braces = true:warning
+csharp_prefer_braces = when_multiline:warning
 
 csharp_preserve_single_line_blocks = true
 

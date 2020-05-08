@@ -5,7 +5,7 @@ namespace CoAPnet.Client
 {
     public class CoapClientConnectOptionsBuilder
     {
-        private readonly CoapClientConnectOptions _options = new CoapClientConnectOptions
+        readonly CoapClientConnectOptions _options = new CoapClientConnectOptions
         {
             TransportLayer = new UdpCoapTransportLayer() // This is the protocols default transport.
         };

@@ -15,7 +15,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
-   sodipodi:docname="MQTT.svg">
+   sodipodi:docname="COAP.svg">
   <defs
      id="defs2">
     <filter
@@ -86,9 +86,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.12374369"
-     inkscape:cx="5197.2935"
-     inkscape:cy="-5542.9262"
+     inkscape:zoom="0.24748738"
+     inkscape:cx="3582.1556"
+     inkscape:cy="-4618.5498"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -109,7 +109,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -128,7 +128,7 @@
        id="rect3791-0"
        inkscape:export-xdpi="10.58"
        inkscape:export-ydpi="10.58"
-       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_512.png" />
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
     <rect
        id="rect3713-0"
        width="512"
@@ -138,9 +138,9 @@
        style="fill:#165016;stroke-width:0.26438791"
        rx="50"
        ry="49.926178"
-       inkscape:export-xdpi="6.3499999"
-       inkscape:export-ydpi="6.3499999"
-       inkscape:export-filename="C:\Workspace\Private\CoAP\Logo_128x128.png" />
+       inkscape:export-xdpi="10.58"
+       inkscape:export-ydpi="10.58"
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
     <rect
        style="fill:#008000;fill-opacity:0.60591131;stroke-width:0.28100395"
        id="rect3806-7"
@@ -150,7 +150,7 @@
        y="1118.0602"
        inkscape:export-xdpi="10.58"
        inkscape:export-ydpi="10.58"
-       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_512.png" />
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
     <path
        inkscape:connector-curvature="0"
        id="path4638-8"
@@ -160,7 +160,7 @@
        inkscape:transform-center-y="146.97441"
        inkscape:export-xdpi="10.58"
        inkscape:export-ydpi="10.58"
-       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_512.png" />
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
     <path
        style="fill:#008000;stroke-width:0.46593985"
        d="m 575.49986,937.46314 a 263.46279,229.17652 0 0 0 -222.8846,226.04466 263.46279,229.17652 0 0 0 0.079,1.3255 h 172.8054 c 27.7001,0 50.0001,-22.3001 50.0001,-50.0001 z"
@@ -168,7 +168,7 @@
        inkscape:connector-curvature="0"
        inkscape:export-xdpi="10.58"
        inkscape:export-ydpi="10.58"
-       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_512.png" />
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
     <ellipse
        style="fill:#008000;stroke-width:0.06901014"
        id="path3715-5-1"
@@ -178,7 +178,7 @@
        ry="33.94323"
        inkscape:export-xdpi="10.58"
        inkscape:export-ydpi="10.58"
-       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_512.png" />
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
     <path
        style="fill:#008000;fill-opacity:0.60591131;stroke-width:0.59952348"
        d="m 132.72171,705.03131 20.46542,36.25722 278.70083,259.01207 a 263.46279,229.17652 0 0 1 3.7119,-3.35582 263.46279,229.17652 0 0 1 6.2503,-4.62299 z"
@@ -186,7 +186,7 @@
        inkscape:connector-curvature="0"
        inkscape:export-xdpi="10.58"
        inkscape:export-ydpi="10.58"
-       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_512.png" />
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -195,7 +195,7 @@
        id="text3774-7"
        inkscape:export-xdpi="10.58"
        inkscape:export-ydpi="10.58"
-       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_512.png"><tspan
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png"><tspan
          sodipodi:role="line"
          id="tspan3772-2"
          x="115.30365"
@@ -210,7 +210,7 @@
        style="fill:#008000;stroke-width:0.06901014"
        inkscape:export-xdpi="10.58"
        inkscape:export-ydpi="10.58"
-       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_512.png" />
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
     <ellipse
        style="fill:#008000;stroke-width:0.06901014"
        id="ellipse3770-4"
@@ -220,7 +220,7 @@
        ry="33.94323"
        inkscape:export-xdpi="10.58"
        inkscape:export-ydpi="10.58"
-       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_512.png" />
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
     <text
        id="text3778-2"
        y="1038.7747"
@@ -229,7 +229,7 @@
        xml:space="preserve"
        inkscape:export-xdpi="10.58"
        inkscape:export-ydpi="10.58"
-       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_512.png"><tspan
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png"><tspan
          style="font-size:141.1111145px;fill:#ffffff;stroke-width:0.26458332"
          y="1038.7747"
          x="204.35486"
@@ -244,8 +244,8 @@
        height="512"
        width="512"
        id="rect4642-3"
-       inkscape:export-xdpi="3.175"
-       inkscape:export-ydpi="3.175"
+       inkscape:export-xdpi="12.7"
+       inkscape:export-ydpi="12.7"
        inkscape:export-filename="C:\Workspace\Private\CoAP\icon_512.png" />
     <path
        inkscape:connector-curvature="0"
@@ -283,5 +283,112 @@
          x="-541.12866"
          y="1047.8564"
          style="font-weight:bold;font-size:141.1111145px;fill:#ffffff;stroke-width:0.26458332">net</tspan></text>
+    <rect
+       id="rect3713-0-1"
+       width="512"
+       height="511.24405"
+       x="86.160248"
+       y="1315.9136"
+       style="fill:#165016;stroke-width:0.26438791"
+       rx="50"
+       ry="49.926178"
+       inkscape:export-xdpi="12.7"
+       inkscape:export-ydpi="12.7"
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
+    <rect
+       style="fill:#008000;fill-opacity:0.60591131;stroke-width:0.28100395"
+       id="rect3806-7-1"
+       width="143.25298"
+       height="9.0714283"
+       x="303.25906"
+       y="1780.3845"
+       inkscape:export-xdpi="10.58"
+       inkscape:export-ydpi="10.58"
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4638-8-7"
+       d="m 526.5801,1368.3616 -5.35728,41.2882 67.77677,374.3898 c 1.657,-0.1701 3.31802,-0.3236 4.98282,-0.4605 2.58601,-0.024 -2.59633,-0.055 0,0 l 4.21736,-11.4794 z"
+       style="fill:#008000;fill-opacity:0.60591131;stroke-width:0.59952348"
+       inkscape:transform-center-x="-28.818481"
+       inkscape:transform-center-y="146.97441"
+       inkscape:export-xdpi="10.58"
+       inkscape:export-ydpi="10.58"
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png"
+       sodipodi:nodetypes="ccccccc" />
+    <path
+       style="fill:#008000;stroke-width:0.46593985"
+       d="m 598.1601,1599.7875 a 263.46279,229.17652 0 0 0 -222.8846,226.0447 263.46279,229.17652 0 0 0 0.079,1.3255 h 172.8054 c 27.70011,0 50.00009,-22.3001 50.00009,-50.0001 z"
+       id="path3715-5-8-6-7"
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="10.58"
+       inkscape:export-ydpi="10.58"
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
+    <ellipse
+       style="fill:#008000;stroke-width:0.06901014"
+       id="path3715-5-1-7"
+       cx="525.0246"
+       cy="1396.9408"
+       rx="39.021355"
+       ry="33.94323"
+       inkscape:export-xdpi="10.58"
+       inkscape:export-ydpi="10.58"
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
+    <path
+       style="fill:#008000;fill-opacity:0.60591131;stroke-width:0.59952348"
+       d="m 155.38195,1367.3557 20.46542,36.2572 278.70084,259.0121 a 263.46279,229.17652 0 0 1 3.7119,-3.3558 263.46279,229.17652 0 0 1 6.2503,-4.623 z"
+       id="rect3806-2-8-2"
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="10.58"
+       inkscape:export-ydpi="10.58"
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="137.9639"
+       y="1553.9918"
+       id="text3774-7-0"
+       inkscape:export-xdpi="10.58"
+       inkscape:export-ydpi="10.58"
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png"><tspan
+         sodipodi:role="line"
+         id="tspan3772-2-3"
+         x="137.9639"
+         y="1553.9918"
+         style="font-size:158.75px;fill:#ffffff;stroke-width:0.26458332">CoAP</tspan></text>
+    <ellipse
+       ry="33.94323"
+       rx="39.021355"
+       cy="1374.9233"
+       cx="156.91696"
+       id="ellipse3768-7-3"
+       style="fill:#008000;stroke-width:0.06901014"
+       inkscape:export-xdpi="10.58"
+       inkscape:export-ydpi="10.58"
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
+    <ellipse
+       style="fill:#008000;stroke-width:0.06901014"
+       id="ellipse3770-4-0"
+       cx="267.43436"
+       cy="1783.2764"
+       rx="39.021355"
+       ry="33.94323"
+       inkscape:export-xdpi="10.58"
+       inkscape:export-ydpi="10.58"
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png" />
+    <text
+       id="text3778-2-0"
+       y="1701.099"
+       x="227.01511"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"
+       inkscape:export-xdpi="10.58"
+       inkscape:export-ydpi="10.58"
+       inkscape:export-filename="C:\Workspace\Private\CoAP\icon_det_256.png"><tspan
+         style="font-size:141.1111145px;fill:#ffffff;stroke-width:0.26458332"
+         y="1701.099"
+         x="227.01511"
+         id="tspan3776-5-6"
+         sodipodi:role="line">net</tspan></text>
   </g>
 </svg>

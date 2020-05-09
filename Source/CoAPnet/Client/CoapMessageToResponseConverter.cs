@@ -23,13 +23,13 @@ namespace CoAPnet.Client
         {
             var options = new CoapResponseOptions();
 
-            var contentFormatOption = message.Options.FirstOrDefault(o => o.Number == (byte)CoapMessageOptionNumber.ContentFormat);
+            var contentFormatOption = message.Options.FirstOrDefault(o => o.Number == CoapMessageOptionNumber.ContentFormat);
             if (contentFormatOption != null)
             {
                 options.ContentFormat = (CoapMessageContentFormat)((CoapMessageOptionUintValue)contentFormatOption.Value).Value;
             }
 
-            var maxAgeOption = message.Options.FirstOrDefault(o => o.Number == (byte)CoapMessageOptionNumber.MaxAge);
+            var maxAgeOption = message.Options.FirstOrDefault(o => o.Number == CoapMessageOptionNumber.MaxAge);
             if (maxAgeOption != null)
             {
                 options.MaxAge = (int)((CoapMessageOptionUintValue)maxAgeOption.Value).Value;
@@ -40,7 +40,7 @@ namespace CoAPnet.Client
                 options.MaxAge = 60;
             }
 
-            var eTagOption = message.Options.FirstOrDefault(o => o.Number == (byte)CoapMessageOptionNumber.ETag);
+            var eTagOption = message.Options.FirstOrDefault(o => o.Number == CoapMessageOptionNumber.ETag);
             if (eTagOption != null)
             {
                 options.ETag = ((CoapMessageOptionOpaqueValue)eTagOption.Value).Value;

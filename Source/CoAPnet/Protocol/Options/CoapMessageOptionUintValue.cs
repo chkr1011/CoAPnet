@@ -9,7 +9,7 @@
 
         public uint Value
         {
-            get; set;
+            get;
         }
 
         public override bool Equals(object obj)

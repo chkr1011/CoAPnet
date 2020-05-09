@@ -4,7 +4,7 @@ namespace CoAPnet.Protocol.Options
 {
     public sealed class CoapMessageOption
     {
-        public CoapMessageOption(byte number, CoapMessageOptionValue value)
+        public CoapMessageOption(CoapMessageOptionNumber number, CoapMessageOptionValue value)
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
 
@@ -12,7 +12,7 @@ namespace CoAPnet.Protocol.Options
             Value = value;
         }
 
-        public byte Number
+        public CoapMessageOptionNumber Number
         {
             get;
         }

@@ -1,6 +1,6 @@
 ﻿namespace CoAPnet.Protocol.Options
 {
-    public enum CoapMessageOptionNumber
+    public enum CoapMessageOptionNumber : byte
     {
         // RFC 7252
         IfMatch = 1,

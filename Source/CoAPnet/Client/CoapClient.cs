@@ -6,7 +6,6 @@ using CoAPnet.Protocol;
 using CoAPnet.Protocol.Observe;
 using CoAPnet.Protocol.Options;
 using System;
-using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,13 +13,14 @@ namespace CoAPnet.Client
 {
     public sealed class CoapClient : ICoapClient
     {
-        readonly ConcurrentDictionary<CoapMessageToken, ICoapResponseHandler> _observedResponseHandlers = new ConcurrentDictionary<CoapMessageToken, ICoapResponseHandler>();
         readonly CoapRequestToMessageConverter _requestToMessageConverter = new CoapRequestToMessageConverter();
         readonly CoapMessageToResponseConverter _messageToResponseConverter = new CoapMessageToResponseConverter();
         readonly CoapMessageDispatcher _messageDispatcher = new CoapMessageDispatcher();
         readonly CoapMessageIdProvider _messageIdProvider = new CoapMessageIdProvider();
         readonly CoapMessageTokenProvider _messageTokenProvider = new CoapMessageTokenProvider();
+
         readonly CoapNetLogger _logger;
+        readonly CoapClientObservationManager _observationManager;
 
         LowLevelCoapClient _lowLevelClient;
         CoapClientConnectOptions _connectOptions;
@@ -29,6 +29,9 @@ namespace CoAPnet.Client
         public CoapClient(CoapNetLogger logger)
         {
             _logger = logger;
+
+            _lowLevelClient = new LowLevelCoapClient(_logger);
+            _observationManager = new CoapClientObservationManager(_messageToResponseConverter, _lowLevelClient, _logger);
         }
 
         public async Task ConnectAsync(CoapClientConnectOptions options, CancellationToken cancellationToken)
@@ -39,10 +42,6 @@ namespace CoAPnet.Client
             }
 
             _connectOptions = options;
-
-            _lowLevelClient?.Dispose();
-
-            _lowLevelClient = new LowLevelCoapClient(_logger);
 
             await _lowLevelClient.ConnectAsync(options, cancellationToken).ConfigureAwait(false);
             _cancellationToken = new CancellationTokenSource();
@@ -97,7 +96,7 @@ namespace CoAPnet.Client
                 payload = await new CoapClientBlockTransferReceiver(requestMessage, responseMessage, this, _logger).ReceiveFullPayload(cancellationToken).ConfigureAwait(false);
             }
 
-            _observedResponseHandlers[token] = options.ResponseHandler;
+            _observationManager.Register(token, options.ResponseHandler);
 
             var response = _messageToResponseConverter.Convert(responseMessage, payload);
             return new CoapObserveResponse(response, this)
@@ -117,12 +116,12 @@ namespace CoAPnet.Client
             var requestMessage = _requestToMessageConverter.Convert(observeResponse.Request);
             requestMessage.Token = observeResponse.Token.Value;
 
-            requestMessage.Options.RemoveAll(o => o.Number == (byte)CoapMessageOptionNumber.Observe);
+            requestMessage.Options.RemoveAll(o => o.Number == CoapMessageOptionNumber.Observe);
             requestMessage.Options.Add(new CoapMessageOptionFactory().CreateObserve(CoapObserveOptionValue.Deregister));
 
             var responseMessage = await RequestAsync(requestMessage, cancellationToken).ConfigureAwait(false);
 
-            _observedResponseHandlers.TryRemove(observeResponse.Token, out var _);
+            _observationManager.Deregister(observeResponse.Token);
         }
 
         internal async Task<CoapMessage> RequestAsync(CoapMessage requestMessage, CancellationToken cancellationToken)
@@ -164,11 +163,11 @@ namespace CoAPnet.Client
                 {
                     var message = await _lowLevelClient.ReceiveAsync(cancellationToken).ConfigureAwait(false);
 
-                    if (!_messageDispatcher.TryDispatch(message))
+                    if (!_messageDispatcher.TryHandleReceivedMessage(message))
                     {
-                        if (!await TryHandleObservedMessage(message).ConfigureAwait(false))
+                        if (!await _observationManager.TryHandleReceivedMessage(message).ConfigureAwait(false))
                         {
-                            await DeregisterObservation(message).ConfigureAwait(false);
+                            _logger.Trace(nameof(CoapClient), "Received an unexpected message ({0}).", message.Id);
                         }
                     }
                 }
@@ -176,59 +175,6 @@ namespace CoAPnet.Client
                 {
                     _logger.Error(nameof(CoapClient), exception, "Error while receiving message.");
                 }
-            }
-        }
-
-        async Task DeregisterObservation(CoapMessage message)
-        {
-            var emptyResponse = new CoapMessage
-            {
-                Type = CoapMessageType.Reset,
-                Code = CoapMessageCodes.Empty,
-                Id = message.Id
-            };
-
-            await _lowLevelClient.SendAsync(emptyResponse, CancellationToken.None).ConfigureAwait(false);
-            _logger.Information(nameof(CoapClient), "Received unobserved message. Sending empty response to deregister.");
-        }
-
-        async Task<bool> TryHandleObservedMessage(CoapMessage coapMessage)
-        {
-            try
-            {
-                if (coapMessage.Token?.Length != 8)
-                {
-                    return false;
-                }
-
-                var token = BitConverter.ToUInt64(coapMessage.Token, 0);
-                if (!_observedResponseHandlers.TryGetValue(new CoapMessageToken(coapMessage.Token), out var responseHandler))
-                {
-                    return false;
-                }
-
-                var payload = coapMessage.Payload;
-
-                // TODO: Check if supported etc.
-                //if (CoapClientBlockTransferReceiver.IsBlockTransfer(coapMessage))
-                //{
-                //    payload = await new CoapClientBlockTransferReceiver(requestMessage, coapMessage, this, _logger).ReceiveFullPayload(CancellationToken.None).ConfigureAwait(false);
-                //}
-
-                var response = _messageToResponseConverter.Convert(coapMessage, payload);
-
-                await responseHandler.HandleResponseAsync(new HandleResponseContext
-                {
-                    Response = response
-                }).ConfigureAwait(false);
-
-                return true;
-            }
-            catch (Exception exception)
-            {
-                _logger.Error(nameof(CoapClient), exception, "Error while handling observed message.");
-
-                return false;
             }
         }
     }

@@ -33,14 +33,14 @@ namespace CoAPnet.Client
         {
             if (responseMessage is null) throw new ArgumentNullException(nameof(responseMessage));
 
-            return responseMessage.Options.Any(o => o.Number == (int)CoapMessageOptionNumber.Block2);
+            return responseMessage.Options.Any(o => o.Number == CoapMessageOptionNumber.Block2);
         }
 
         public async Task<ArraySegment<byte>> ReceiveFullPayload(CancellationToken cancellationToken)
         {
-            var receivedBlock2Option = _firstResponseMessage.Options.First(o => o.Number == (int)CoapMessageOptionNumber.Block2);
+            var receivedBlock2Option = _firstResponseMessage.Options.First(o => o.Number == CoapMessageOptionNumber.Block2);
             var receivedBlock2OptionValue = _blockValueDecoder.Decode(((CoapMessageOptionUintValue)receivedBlock2Option.Value).Value);
-            _logger.Trace(nameof(CoapClientBlockTransferReceiver), "Received block {0}.", FormatBlock2OptionValue(receivedBlock2OptionValue));
+            _logger.Trace(nameof(CoapClientBlockTransferReceiver), "Received Block2 {0}.", FormatBlock2OptionValue(receivedBlock2OptionValue));
 
             var requestMessage = new CoapMessage
             {
@@ -50,8 +50,7 @@ namespace CoAPnet.Client
                 Options = new List<CoapMessageOption>(_requestMessage.Options)
             };
 
-            var requestBlock2OptionValue = new CoapMessageOptionUintValue(0);
-            var requestBlock2Option = new CoapMessageOption((byte)CoapMessageOptionNumber.Block2, requestBlock2OptionValue);
+            var requestBlock2Option = new CoapMessageOption(CoapMessageOptionNumber.Block2, new CoapMessageOptionUintValue(0));
             requestMessage.Options.Add(requestBlock2Option);
 
             // Crate a buffer which is pre sized to at least 4 blocks.
@@ -62,16 +61,18 @@ namespace CoAPnet.Client
                 while (receivedBlock2OptionValue.HasFollowingBlocks)
                 {
                     // Patch Block1 so that we get the next chunk.
+                    // TODO: Move custom size to client connect options!
+                    //receivedBlock2OptionValue.Size = 1024;
                     receivedBlock2OptionValue.Number++;
 
                     // TODO: Avoid setting value. Create new instead.
-                    requestBlock2OptionValue.Value = _blockValueEncoder.Encode(receivedBlock2OptionValue);
+                    requestBlock2Option.Value = new CoapMessageOptionUintValue(_blockValueEncoder.Encode(receivedBlock2OptionValue));
 
                     var response = await _client.RequestAsync(requestMessage, cancellationToken).ConfigureAwait(false);
-                    receivedBlock2Option = response.Options.First(o => o.Number == (int)CoapMessageOptionNumber.Block2);
+                    receivedBlock2Option = response.Options.First(o => o.Number == CoapMessageOptionNumber.Block2);
                     receivedBlock2OptionValue = _blockValueDecoder.Decode(((CoapMessageOptionUintValue)receivedBlock2Option.Value).Value);
 
-                    _logger.Trace(nameof(CoapClientBlockTransferReceiver), "Received block {0}.", FormatBlock2OptionValue(receivedBlock2OptionValue));
+                    _logger.Trace(nameof(CoapClientBlockTransferReceiver), "Received Block2 {0}.", FormatBlock2OptionValue(receivedBlock2OptionValue));
 
                     buffer.Write(response.Payload);
                 }
@@ -82,7 +83,7 @@ namespace CoAPnet.Client
 
         string FormatBlock2OptionValue(CoapBlockTransferOptionValue value)
         {
-            return $"Block2:{value.Number}/{(value.HasFollowingBlocks ? 'M' : '_')}/{value.Size}";
+            return $"{value.Number}/{(value.HasFollowingBlocks ? 'M' : '_')}/{value.Size}";
         }
     }
 }

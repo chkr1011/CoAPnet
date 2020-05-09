@@ -8,8 +8,8 @@ namespace CoAPnet.Protocol.Encoding
 {
     public sealed class CoapMessageDecoder
     {
-        readonly CoapMessageOptionFactory _optionFactory = new CoapMessageOptionFactory();
-        readonly CoapNetLogger _logger;
+        private readonly CoapNetLogger _logger;
+        private readonly CoapMessageOptionFactory _optionFactory = new CoapMessageOptionFactory();
 
         public CoapMessageDecoder(CoapNetLogger logger)
         {
@@ -66,6 +66,105 @@ namespace CoAPnet.Protocol.Encoding
             }
         }
 
+        CoapMessageOption CreateOption(CoapMessageOptionNumber number, byte[] value)
+        {
+            if (number == CoapMessageOptionNumber.IfMatch)
+            {
+                return _optionFactory.CreateIfMatch(value);
+            }
+
+            if (number == CoapMessageOptionNumber.UriHost)
+            {
+                return _optionFactory.CreateUriHost(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == CoapMessageOptionNumber.ETag)
+            {
+                return _optionFactory.CreateETag(value);
+            }
+
+            if (number == CoapMessageOptionNumber.IfNoneMatch)
+            {
+                return _optionFactory.CreateIfNoneMatch();
+            }
+
+            if (number == CoapMessageOptionNumber.UriPort)
+            {
+                return _optionFactory.CreateUriPort(DecodeUintOptionValue(value));
+            }
+
+            if (number == CoapMessageOptionNumber.LocationPath)
+            {
+                return _optionFactory.CreateLocationPath(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == CoapMessageOptionNumber.UriPath)
+            {
+                return _optionFactory.CreateUriPath(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == CoapMessageOptionNumber.ContentFormat)
+            {
+                return _optionFactory.CreateContentFormat((CoapMessageContentFormat)DecodeUintOptionValue(value));
+            }
+
+            if (number == CoapMessageOptionNumber.MaxAge)
+            {
+                return _optionFactory.CreateMaxAge(DecodeUintOptionValue(value));
+            }
+
+            if (number == CoapMessageOptionNumber.UriQuery)
+            {
+                return _optionFactory.CreateUriQuery(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == CoapMessageOptionNumber.Accept)
+            {
+                return _optionFactory.CreateAccept(DecodeUintOptionValue(value));
+            }
+
+            if (number == CoapMessageOptionNumber.LocationQuery)
+            {
+                return _optionFactory.CreateLocationQuery(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == CoapMessageOptionNumber.ProxyUri)
+            {
+                return _optionFactory.CreateProxyUri(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == CoapMessageOptionNumber.ProxyScheme)
+            {
+                return _optionFactory.CreateProxyScheme(System.Text.Encoding.UTF8.GetString(value));
+            }
+
+            if (number == CoapMessageOptionNumber.Size1)
+            {
+                return _optionFactory.CreateSize1(DecodeUintOptionValue(value));
+            }
+
+            if (number == CoapMessageOptionNumber.Block1)
+            {
+                return _optionFactory.CreateBlock1(DecodeUintOptionValue(value));
+            }
+
+            if (number == CoapMessageOptionNumber.Block2)
+            {
+                return _optionFactory.CreateBlock2(DecodeUintOptionValue(value));
+            }
+
+            if (number == CoapMessageOptionNumber.Observe)
+            {
+                return _optionFactory.CreateObserve(DecodeUintOptionValue(value));
+            }
+
+            _logger.Warning(nameof(CoapMessageDecoder), "Invalid message: CoAP option number {0} not supported.", number);
+
+            // We do not throw because new RFCs might use new options. We wrap unknown ones
+            // into a opaque value.
+            return new CoapMessageOption(number, new CoapMessageOptionOpaqueValue(value));
+        }
+
         List<CoapMessageOption> DecodeOptions(CoapMessageReader reader)
         {
             var options = new List<CoapMessageOption>();
@@ -114,109 +213,10 @@ namespace CoAPnet.Protocol.Encoding
                 var number = lastNumber + delta;
                 lastNumber = number;
 
-                options.Add(CreateOption(number, value));
+                options.Add(CreateOption((CoapMessageOptionNumber)number, value));
             }
 
             return options;
-        }
-
-        CoapMessageOption CreateOption(int number, byte[] value)
-        {
-            if (number == (int)CoapMessageOptionNumber.IfMatch)
-            {
-                return _optionFactory.CreateIfMatch(value);
-            }
-
-            if (number == (int)CoapMessageOptionNumber.UriHost)
-            {
-                return _optionFactory.CreateUriHost(System.Text.Encoding.UTF8.GetString(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.ETag)
-            {
-                return _optionFactory.CreateETag(value);
-            }
-
-            if (number == (int)CoapMessageOptionNumber.IfNoneMatch)
-            {
-                return _optionFactory.CreateIfNoneMatch();
-            }
-
-            if (number == (int)CoapMessageOptionNumber.UriPort)
-            {
-                return _optionFactory.CreateUriPort(DecodeUintOptionValue(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.LocationPath)
-            {
-                return _optionFactory.CreateLocationPath(System.Text.Encoding.UTF8.GetString(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.UriPath)
-            {
-                return _optionFactory.CreateUriPath(System.Text.Encoding.UTF8.GetString(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.ContentFormat)
-            {
-                return _optionFactory.CreateContentFormat((CoapMessageContentFormat)DecodeUintOptionValue(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.MaxAge)
-            {
-                return _optionFactory.CreateMaxAge(DecodeUintOptionValue(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.UriQuery)
-            {
-                return _optionFactory.CreateUriQuery(System.Text.Encoding.UTF8.GetString(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.Accept)
-            {
-                return _optionFactory.CreateAccept(DecodeUintOptionValue(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.LocationQuery)
-            {
-                return _optionFactory.CreateLocationQuery(System.Text.Encoding.UTF8.GetString(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.ProxyUri)
-            {
-                return _optionFactory.CreateProxyUri(System.Text.Encoding.UTF8.GetString(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.ProxyScheme)
-            {
-                return _optionFactory.CreateProxyScheme(System.Text.Encoding.UTF8.GetString(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.Size1)
-            {
-                return _optionFactory.CreateSize1(DecodeUintOptionValue(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.Block1)
-            {
-                return _optionFactory.CreateBlock1(DecodeUintOptionValue(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.Block2)
-            {
-                return _optionFactory.CreateBlock2(DecodeUintOptionValue(value));
-            }
-
-            if (number == (int)CoapMessageOptionNumber.Observe)
-            {
-                return _optionFactory.CreateObserve(DecodeUintOptionValue(value));
-            }
-
-            _logger.Warning(nameof(CoapMessageDecoder), "Invalid message: CoAP option number {0} not supported.", number);
-
-            // We do not throw because new RFCs might use new options. We wrap unknown ones
-            // into a opaque value.
-            return new CoapMessageOption((byte)number, new CoapMessageOptionOpaqueValue(value));
         }
 
         uint DecodeUintOptionValue(byte[] value)

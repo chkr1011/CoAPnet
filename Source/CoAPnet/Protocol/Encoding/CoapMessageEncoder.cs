@@ -52,7 +52,7 @@ namespace CoAPnet.Protocol.Encoding
                 return;
             }
 
-            var previousOptionNumber = 0;
+            CoapMessageOptionNumber previousOptionNumber = 0;
             foreach (var option in options.OrderBy(o => o.Number))
             {
                 // As per RFC: Only the delta of the option number is stored.
@@ -190,14 +190,19 @@ namespace CoAPnet.Protocol.Encoding
 
         void ThrowIfInvalid(CoapMessageCode code)
         {
+            if (code == null)
+            {
+                throw new CoapProtocolViolationException("Message code is not set.");
+            }
+
             if (code.Class > 7)
             {
-                throw new CoapProtocolViolationException("Code class is larget than 7.");
+                throw new CoapProtocolViolationException("Message code class is larger than 7.");
             }
 
             if (code.Detail > 31)
             {
-                throw new CoapProtocolViolationException("Code class is larget than 7.");
+                throw new CoapProtocolViolationException("Message detail is larger than 7.");
             }
         }
     }

@@ -86,6 +86,8 @@ namespace CoAP.TestClient
         {
             public Task HandleResponseAsync(HandleResponseContext context)
             {
+                Console.WriteLine("> RECEIVED OBSERVED RESOURCE");
+                Console.WriteLine("    + Sequence number = " + context.SequenceNumber);
                 PrintResponse(context.Response);
                 return Task.CompletedTask;
             }

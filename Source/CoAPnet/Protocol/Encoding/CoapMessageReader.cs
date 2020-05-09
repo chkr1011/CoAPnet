@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace CoAPnet.Protocol.Encoding
 {
@@ -73,6 +74,7 @@ namespace CoAPnet.Protocol.Encoding
             _memoryStream.Dispose();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void FillByteCache()
         {
             _byteCache = (byte)_memoryStream.ReadByte();

@@ -20,7 +20,7 @@ namespace CoAPnet.MessageDispatcher
             _awaiters.Clear();
         }
 
-        public bool TryDispatch(CoapMessage message)
+        public bool TryHandleReceivedMessage(CoapMessage message)
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
 

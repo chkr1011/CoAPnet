@@ -8,14 +8,14 @@ namespace CoAPnet.Protocol.BlockTransfer
         public CoapBlockTransferOptionValue Decode(uint value)
         {
             var mask = 0x7;
-            var size = (byte)(value & mask);
+            var size = (ushort)(value & mask);
 
             if (size == 0x7)
             {
                 throw new CoapProtocolViolationException("A SZX value of 7 is reserved.");
             }
 
-            size = (byte)Math.Pow(2, size + 4);
+            size = (ushort)Math.Pow(2, size + 4);
 
             return new CoapBlockTransferOptionValue
             {

@@ -39,7 +39,7 @@ namespace CoAPnet.Extensions.DTLS
 
             var builder = new DtlsCoapTransportLayerOptionsBuilder();
             options.Invoke(builder);
-            return clientConnectOptionsBuilder.WithDtlsTransportLayer(builder.Build());
+            return clientConnectOptionsBuilder.WithDtlsTransportLayer(builder.Build()).WithEncryptedPort();
         }
     }
 }

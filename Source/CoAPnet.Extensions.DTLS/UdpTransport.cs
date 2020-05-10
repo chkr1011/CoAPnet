@@ -1,4 +1,5 @@
-﻿using CoAPnet.Transport;
+﻿using CoAPnet.Exceptions;
+using CoAPnet.Transport;
 using Org.BouncyCastle.Crypto.Tls;
 using System;
 using System.Net;
@@ -59,7 +60,14 @@ namespace CoAPnet.Extensions.DTLS
                 throw new ArgumentNullException(nameof(buf));
             }
 
-            _socket.SendTo(buf, off, len, SocketFlags.None, _connectOptions.EndPoint);
+            try
+            {
+                _socket.SendTo(buf, off, len, SocketFlags.None, _connectOptions.EndPoint);
+            }
+            catch (ObjectDisposedException)
+            {
+                throw new CoapCommunicationException("The connection was closed.", null);
+            }       
         }
 
         public void Dispose()
@@ -69,6 +77,8 @@ namespace CoAPnet.Extensions.DTLS
 
         public void Close()
         {
+            // There is no need to call "Disconnect" because we use UDP.
+            _socket?.Dispose();
         }
     }
 }

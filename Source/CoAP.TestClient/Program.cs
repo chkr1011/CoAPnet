@@ -27,7 +27,6 @@ namespace CoAP.TestClient
 
                 var connectOptions = new CoapClientConnectOptionsBuilder()
                     .WithHost("GW-B8D7AF2B3EA3.fritz.box")
-                    .WithPort(5684)
                     .WithDtlsTransportLayer(o =>
                         o.WithPreSharedKey("IDENTITY", "lqxbBH6o2eAKSo5A"))
                     .Build();

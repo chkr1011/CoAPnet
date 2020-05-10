@@ -1,4 +1,5 @@
-﻿using CoAPnet.Transport;
+﻿using CoAPnet.Protocol;
+using CoAPnet.Transport;
 using System;
 
 namespace CoAPnet.Client
@@ -30,6 +31,16 @@ namespace CoAPnet.Client
         {
             _options.Port = value;
             return this;
+        }
+
+        public CoapClientConnectOptionsBuilder WithEncryptedPort()
+        {
+            return WithPort(CoapDefaultPort.Encrypted);
+        }
+
+        public CoapClientConnectOptionsBuilder WithUnencryptedPort()
+        {
+            return WithPort(CoapDefaultPort.Unencrpyted);
         }
 
         public CoapClientConnectOptionsBuilder WithTcpTransportLayer()

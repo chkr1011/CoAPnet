@@ -12,7 +12,10 @@ namespace CoAPnet.Transport
 
         public async Task ConnectAsync(CoapTransportLayerConnectOptions options, CancellationToken cancellationToken)
         {
-            if (options is null) throw new ArgumentNullException(nameof(options));
+            if (options is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
             Dispose();
 

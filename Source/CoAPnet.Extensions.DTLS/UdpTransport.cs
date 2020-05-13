@@ -21,12 +21,12 @@ namespace CoAPnet.Extensions.DTLS
 
         public int GetReceiveLimit()
         {
-            return 65000;
+            return 66000;
         }
 
         public int GetSendLimit()
         {
-            return 65000;
+            return 66000;
         }
 
         public int Receive(byte[] buf, int off, int len, int waitMillis)
@@ -45,10 +45,12 @@ namespace CoAPnet.Extensions.DTLS
             }
             catch (SocketException)
             {
+                // Indicate a graceful socket close.
                 return 0;
             }
             catch (ObjectDisposedException)
             {
+                // Indicate a graceful socket close.
                 return 0;
             }
         }

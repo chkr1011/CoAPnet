@@ -28,7 +28,6 @@ vstest.console.exe ..\Source\CoAPnet.Tests\bin\Release\netcoreapp3.1\CoAPnet.Tes
 
 # Build the DTLS extension
 &$msbuild ..\Source\CoAPnet.Extensions.DTLS\CoAPnet.Extensions.DTLS.csproj /t:Build /p:Configuration="Release" /p:TargetFramework="net452" /p:FileVersion=$assemblyVersion /p:AssemblyVersion=$assemblyVersion /verbosity:m /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=".\..\..\Build\codeSigningKey.pfx"
-&$msbuild ..\Source\CoAPnet.Extensions.DTLS\CoAPnet.Extensions.DTLS.csproj /t:Build /p:Configuration="Release" /p:TargetFramework="netstandard1.3" /p:FileVersion=$assemblyVersion /p:AssemblyVersion=$assemblyVersion /verbosity:m /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=".\..\..\Build\codeSigningKey.pfx"
 &$msbuild ..\Source\CoAPnet.Extensions.DTLS\CoAPnet.Extensions.DTLS.csproj /t:Build /p:Configuration="Release" /p:TargetFramework="netstandard2.0" /p:FileVersion=$assemblyVersion /p:AssemblyVersion=$assemblyVersion /verbosity:m /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=".\..\..\Build\codeSigningKey.pfx"
 
 # Create NuGet packages.

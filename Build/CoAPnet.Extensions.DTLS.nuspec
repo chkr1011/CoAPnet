@@ -8,7 +8,7 @@
     <license type="file">LICENSE</license>
     <projectUrl>https://github.com/chkr1011/CoAPnet</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/chkr1011/CoAPnet/master/Images/Logo_128x128.png</iconUrl>
-    <!-- <icon>images\Logo_128x128.png</icon> -->
+    <icon>images\Logo_128x128.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>This is an extension library which provides a wrapper to use _BouncyCastle_ as the transport layer.</description>
     <releaseNotes>For release notes please go to CoAPnet release notes (https://www.nuget.org/packages/CoAPnet/).</releaseNotes>

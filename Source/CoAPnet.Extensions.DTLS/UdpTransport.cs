@@ -39,9 +39,9 @@ namespace CoAPnet.Extensions.DTLS
             try
             {
                 EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                var datagramLength = _socket.ReceiveFrom(buf, off, len, SocketFlags.None, ref remoteEndPoint);
+                var length = _socket.ReceiveFrom(buf, off, len, SocketFlags.None, ref remoteEndPoint);
 
-                return datagramLength;
+                return length;
             }
             catch (SocketException)
             {

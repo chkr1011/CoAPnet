@@ -20,7 +20,7 @@ namespace CoAPnet.Transport
             Dispose();
 
             _tcpClient = new TcpClient();
-            using (cancellationToken.Register(() => Dispose()))
+            using (cancellationToken.Register(Dispose))
             {
                 await _tcpClient.ConnectAsync(options.EndPoint.Address, options.EndPoint.Port).ConfigureAwait(false);
                 _networkStream = _tcpClient.GetStream();
@@ -44,7 +44,7 @@ namespace CoAPnet.Transport
 
         public Task SendAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
         {
-            return _networkStream.WriteAsync(buffer.Array, buffer.Offset, buffer.Count);
+            return _networkStream.WriteAsync(buffer.Array, buffer.Offset, buffer.Count, cancellationToken);
         }
     }
 }

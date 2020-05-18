@@ -16,7 +16,10 @@ namespace CoAPnet.Client
 
         public CoapRequestBuilder WithPath(params string[] value)
         {
-            if (value is null) throw new ArgumentNullException(nameof(value));
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
 
             _request.Options.UriPath = string.Join("/", value);
             return this;
@@ -30,7 +33,10 @@ namespace CoAPnet.Client
 
         public CoapRequestBuilder WithQuery(string value)
         {
-            if (value is null) throw new ArgumentNullException(nameof(value));
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
 
             if (_request.Options.UriQuery == null)
             {
@@ -67,7 +73,10 @@ namespace CoAPnet.Client
 
         public CoapRequestBuilder WithPayload(string value)
         {
-            if (value is null) throw new ArgumentNullException(nameof(value));
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
 
             return WithPayload(Encoding.UTF8.GetBytes(value));
         }

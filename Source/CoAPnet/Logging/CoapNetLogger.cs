@@ -42,7 +42,10 @@ namespace CoAPnet.Logging
 
         public void RegisterSink(ICoapNetLoggerSink sink)
         {
-            if (sink is null) throw new ArgumentNullException(nameof(sink));
+            if (sink is null)
+            {
+                throw new ArgumentNullException(nameof(sink));
+            }
 
             lock (_sinks)
             {
@@ -54,7 +57,10 @@ namespace CoAPnet.Logging
 
         public void UnregisterSink(ICoapNetLoggerSink sink)
         {
-            if (sink is null) throw new ArgumentNullException(nameof(sink));
+            if (sink is null)
+            {
+                throw new ArgumentNullException(nameof(sink));
+            }
 
             lock (_sinks)
             {

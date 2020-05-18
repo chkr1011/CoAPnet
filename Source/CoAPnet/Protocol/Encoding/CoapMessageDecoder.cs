@@ -8,8 +8,8 @@ namespace CoAPnet.Protocol.Encoding
 {
     public sealed class CoapMessageDecoder
     {
-        private readonly CoapNetLogger _logger;
-        private readonly CoapMessageOptionFactory _optionFactory = new CoapMessageOptionFactory();
+        readonly CoapNetLogger _logger;
+        readonly CoapMessageOptionFactory _optionFactory = new CoapMessageOptionFactory();
 
         public CoapMessageDecoder(CoapNetLogger logger)
         {
@@ -219,7 +219,7 @@ namespace CoAPnet.Protocol.Encoding
             return options;
         }
 
-        uint DecodeUintOptionValue(byte[] value)
+        static uint DecodeUintOptionValue(byte[] value)
         {
             if (value == null || value.Length == 0)
             {

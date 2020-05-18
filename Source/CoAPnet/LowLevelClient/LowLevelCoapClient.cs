@@ -46,7 +46,10 @@ namespace CoAPnet.LowLevelClient
 
         public Task SendAsync(CoapMessage message, CancellationToken cancellationToken)
         {
-            if (message is null) throw new ArgumentNullException(nameof(message));
+            if (message is null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
 
             var requestMessageBuffer = _messageEncoder.Encode(message);
             return _transportLayerAdapter.SendAsync(requestMessageBuffer, cancellationToken);

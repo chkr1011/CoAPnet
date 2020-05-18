@@ -8,11 +8,14 @@ namespace CoAPnet.Protocol.Encoding
 {
     public sealed class CoapMessageEncoder
     {
-        readonly byte[] EmptyArray = new byte[0];
+        readonly byte[] _emptyArray = new byte[0];
 
         public ArraySegment<byte> Encode(CoapMessage message)
         {
-            if (message == null) throw new ArgumentNullException(nameof(message));
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
 
             ThrowIfInvalid(message);
 
@@ -63,7 +66,7 @@ namespace CoAPnet.Protocol.Encoding
 
                 if (option.Value is CoapMessageOptionEmptyValue)
                 {
-                    value = EmptyArray;
+                    value = _emptyArray;
                 }
                 else if (option.Value is CoapMessageOptionUintValue uintValue)
                 {
@@ -115,47 +118,45 @@ namespace CoAPnet.Protocol.Encoding
             }
         }
 
-        byte[] EncodeUintOptioNValue(uint value)
+        static byte[] EncodeUintOptioNValue(uint value)
         {
             if (value <= 255U)
             {
-                return new byte[]
+                return new []
                 {
                     (byte)value
                 };
             }
-            else if (value <= 65535U)
+            
+            if (value <= 65535U)
             {
-                return new byte[]
+                return new []
                 {
                     (byte)(value >> 8),
                     (byte)(value >> 0)
                 };
             }
-            else if (value <= 16777215U)
+            
+            if (value <= 16777215U)
             {
-                return new byte[]
+                return new []
                 {
-                    (byte)(value >> 16),
-                    (byte)(value >> 8),
-                    (byte)(value >> 0)
-                };
-            }
-            else
-            {
-                return new byte[]
-                {
-                    (byte)(value >> 24),
                     (byte)(value >> 16),
                     (byte)(value >> 8),
                     (byte)(value >> 0)
                 };
             }
 
-            throw new CoapProtocolViolationException("The value for the uint option is too long.");
+            return new[]
+            {
+                (byte)(value >> 24),
+                (byte)(value >> 16),
+                (byte)(value >> 8),
+                (byte)(value >> 0)
+            };
         }
 
-        void EncodeOptionValue(int value, out int nibble)
+        static void EncodeOptionValue(int value, out int nibble)
         {
             if (value <= 12)
             {
@@ -178,7 +179,7 @@ namespace CoAPnet.Protocol.Encoding
             throw new CoapProtocolViolationException("Option value is too long.");
         }
 
-        void ThrowIfInvalid(CoapMessage message)
+        static void ThrowIfInvalid(CoapMessage message)
         {
             if (message.Token?.Length > 8)
             {
@@ -188,7 +189,7 @@ namespace CoAPnet.Protocol.Encoding
             ThrowIfInvalid(message.Code);
         }
 
-        void ThrowIfInvalid(CoapMessageCode code)
+        static void ThrowIfInvalid(CoapMessageCode code)
         {
             if (code == null)
             {

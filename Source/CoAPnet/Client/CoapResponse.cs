@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CoAPnet.Client
+﻿namespace CoAPnet.Client
 {
     public class CoapResponse
     {

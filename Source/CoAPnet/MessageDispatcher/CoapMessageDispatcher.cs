@@ -10,7 +10,10 @@ namespace CoAPnet.MessageDispatcher
 
         public void Dispatch(Exception exception)
         {
-            if (exception is null) throw new ArgumentNullException(nameof(exception));
+            if (exception is null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
 
             foreach (var awaiter in _awaiters)
             {
@@ -22,7 +25,10 @@ namespace CoAPnet.MessageDispatcher
 
         public bool TryHandleReceivedMessage(CoapMessage message)
         {
-            if (message == null) throw new ArgumentNullException(nameof(message));
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
 
             if (_awaiters.TryRemove(message.Id, out var awaiter))
             {

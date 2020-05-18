@@ -23,7 +23,7 @@
 
         InternalServerError = 500,
         NotImplemented = 501,
-        BadBateway = 502,
+        BadGateway = 502,
         ServiceUnavailable = 503,
         GatewayTimeout = 504,
         ProxyingNotSupported = 505

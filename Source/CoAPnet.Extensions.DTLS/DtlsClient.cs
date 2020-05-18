@@ -3,7 +3,7 @@ using System;
 
 namespace CoAPnet.Extensions.DTLS
 {
-    public partial class DtlsClient : DefaultTlsClient
+    public class DtlsClient : DefaultTlsClient
     {
         readonly ProtocolVersion _protocolVersion;
         readonly PreSharedKey _preSharedKey;
@@ -14,25 +14,13 @@ namespace CoAPnet.Extensions.DTLS
             _preSharedKey = preSharedKey ?? throw new ArgumentNullException(nameof(preSharedKey));
         }
 
-        public override ProtocolVersion MinimumVersion
-        {
-            get
-            {
-                return _protocolVersion;
-            }
-        }
+        public override ProtocolVersion MinimumVersion => _protocolVersion;
 
-        public override ProtocolVersion ClientVersion
-        {
-            get
-            {
-                return _protocolVersion;
-            }
-        }
+        public override ProtocolVersion ClientVersion => _protocolVersion;
 
         public override int[] GetCipherSuites()
         {
-            return new int[] {
+            return new [] {
                 CipherSuite.TLS_PSK_WITH_AES_128_CCM,
                 CipherSuite.TLS_PSK_WITH_AES_128_CCM_8,
                 CipherSuite.TLS_PSK_WITH_AES_256_CCM,

@@ -9,7 +9,10 @@ namespace CoAPnet.Client
     {
         public CoapResponse Convert(CoapMessage message, ArraySegment<byte> payload)
         {
-            if (message is null) throw new ArgumentNullException(nameof(message));
+            if (message is null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
 
             return new CoapResponse
             {
@@ -19,7 +22,7 @@ namespace CoAPnet.Client
             };
         }
 
-        CoapResponseOptions GetOptions(CoapMessage message)
+        static CoapResponseOptions GetOptions(CoapMessage message)
         {
             var options = new CoapResponseOptions();
 
@@ -49,7 +52,7 @@ namespace CoAPnet.Client
             return options;
         }
 
-        CoapResponseStatusCode GetStatusCode(CoapMessage message)
+        static CoapResponseStatusCode GetStatusCode(CoapMessage message)
         {
             if (message.Code.Equals(CoapMessageCodes.Empty))
             {
@@ -141,9 +144,9 @@ namespace CoAPnet.Client
                 return CoapResponseStatusCode.NotImplemented;
             }
 
-            if (message.Code.Equals(CoapMessageCodes.BadBateway))
+            if (message.Code.Equals(CoapMessageCodes.BadGateway))
             {
-                return CoapResponseStatusCode.BadBateway;
+                return CoapResponseStatusCode.BadGateway;
             }
 
             if (message.Code.Equals(CoapMessageCodes.ServiceUnavailable))

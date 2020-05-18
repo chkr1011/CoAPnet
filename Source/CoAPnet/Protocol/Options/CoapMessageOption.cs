@@ -6,10 +6,8 @@ namespace CoAPnet.Protocol.Options
     {
         public CoapMessageOption(CoapMessageOptionNumber number, CoapMessageOptionValue value)
         {
-            if (value is null) throw new ArgumentNullException(nameof(value));
-
             Number = number;
-            Value = value;
+            Value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         public CoapMessageOptionNumber Number

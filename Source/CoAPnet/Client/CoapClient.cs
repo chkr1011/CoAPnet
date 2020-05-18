@@ -21,8 +21,8 @@ namespace CoAPnet.Client
 
         readonly CoapNetLogger _logger;
         readonly CoapClientObservationManager _observationManager;
+        readonly LowLevelCoapClient _lowLevelClient;
 
-        LowLevelCoapClient _lowLevelClient;
         CoapClientConnectOptions _connectOptions;
         CancellationTokenSource _cancellationToken;
 
@@ -36,12 +36,7 @@ namespace CoAPnet.Client
 
         public async Task ConnectAsync(CoapClientConnectOptions options, CancellationToken cancellationToken)
         {
-            if (options is null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
-
-            _connectOptions = options;
+            _connectOptions = options ?? throw new ArgumentNullException(nameof(options));
 
             await _lowLevelClient.ConnectAsync(options, cancellationToken).ConfigureAwait(false);
             _cancellationToken = new CancellationTokenSource();
@@ -126,7 +121,10 @@ namespace CoAPnet.Client
 
         internal async Task<CoapMessage> RequestAsync(CoapMessage requestMessage, CancellationToken cancellationToken)
         {
-            if (requestMessage is null) throw new ArgumentNullException(nameof(requestMessage));
+            if (requestMessage is null)
+            {
+                throw new ArgumentNullException(nameof(requestMessage));
+            }
 
             requestMessage.Id = _messageIdProvider.Next();
 
@@ -137,7 +135,7 @@ namespace CoAPnet.Client
 
                 var responseMessage = await responseAwaiter.WaitOneAsync(_connectOptions.CommunicationTimeout).ConfigureAwait(false);
 
-                if (responseMessage.Code == CoapMessageCodes.Empty)
+                if (responseMessage.Code.Equals(CoapMessageCodes.Empty))
                 {
                     // TODO: Support message which are sent later (no piggybacking).
                 }

@@ -10,7 +10,7 @@ namespace CoAPnet.Protocol.Encoding
         readonly ArraySegment<byte> _buffer;
 
         int _bitOffset = -1;
-        byte _byteCache = 0x0;
+        byte _byteCache;
 
         public CoapMessageReader(ArraySegment<byte> buffer)
         {
@@ -18,13 +18,7 @@ namespace CoAPnet.Protocol.Encoding
             _buffer = buffer;
         }
 
-        public bool EndOfStream
-        {
-            get
-            {
-                return _memoryStream.Position == _memoryStream.Length;
-            }
-        }
+        public bool EndOfStream => _memoryStream.Position == _memoryStream.Length;
 
         public int ReadBits(int count)
         {

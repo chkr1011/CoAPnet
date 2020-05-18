@@ -31,7 +31,10 @@ namespace CoAPnet.Client
 
         public static bool IsBlockTransfer(CoapMessage responseMessage)
         {
-            if (responseMessage is null) throw new ArgumentNullException(nameof(responseMessage));
+            if (responseMessage is null)
+            {
+                throw new ArgumentNullException(nameof(responseMessage));
+            }
 
             return responseMessage.Options.Any(o => o.Number == CoapMessageOptionNumber.Block2);
         }
@@ -81,7 +84,7 @@ namespace CoAPnet.Client
             }
         }
 
-        string FormatBlock2OptionValue(CoapBlockTransferOptionValue value)
+        static string FormatBlock2OptionValue(CoapBlockTransferOptionValue value)
         {
             return $"{value.Number}/{(value.HasFollowingBlocks ? 'M' : '_')}/{value.Size}";
         }

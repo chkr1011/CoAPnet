@@ -12,10 +12,10 @@ namespace CoAPnet.Client
 {
     public sealed class CoapClientObservationManager
     {
-        private readonly LowLevelCoapClient _client;
-        private readonly CoapNetLogger _logger;
-        private readonly CoapMessageToResponseConverter _messageToResponseConverter;
-        private readonly ConcurrentDictionary<CoapMessageToken, ICoapResponseHandler> _observedResponseHandlers = new ConcurrentDictionary<CoapMessageToken, ICoapResponseHandler>();
+        readonly LowLevelCoapClient _client;
+        readonly CoapNetLogger _logger;
+        readonly CoapMessageToResponseConverter _messageToResponseConverter;
+        readonly ConcurrentDictionary<CoapMessageToken, ICoapResponseHandler> _observedResponseHandlers = new ConcurrentDictionary<CoapMessageToken, ICoapResponseHandler>();
 
         public CoapClientObservationManager(CoapMessageToResponseConverter messageToResponseConverter, LowLevelCoapClient client, CoapNetLogger logger)
         {
@@ -26,7 +26,7 @@ namespace CoAPnet.Client
 
         public void Deregister(CoapMessageToken token)
         {
-            _observedResponseHandlers.TryRemove(token, out var _);
+            _observedResponseHandlers.TryRemove(token, out _);
         }
 
         public void Register(CoapMessageToken token, ICoapResponseHandler responseHandler)
@@ -36,7 +36,10 @@ namespace CoAPnet.Client
 
         public async Task<bool> TryHandleReceivedMessage(CoapMessage message)
         {
-            if (message is null) throw new ArgumentNullException(nameof(message));
+            if (message is null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
 
             try
             {
@@ -91,7 +94,7 @@ namespace CoAPnet.Client
             }
         }
 
-        async Task DeregisterObservation(CoapMessage message)
+        Task DeregisterObservation(CoapMessage message)
         {
             var emptyResponse = new CoapMessage
             {
@@ -101,7 +104,7 @@ namespace CoAPnet.Client
             };
 
             _logger.Information(nameof(CoapClient), "Received unobserved message. Sending empty response to deregister.");
-            await _client.SendAsync(emptyResponse, CancellationToken.None).ConfigureAwait(false);
+            return _client.SendAsync(emptyResponse, CancellationToken.None);
         }
     }
 }

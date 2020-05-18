@@ -22,7 +22,7 @@ namespace CoAPnet.Extensions.DTLS
             return _preSharedKey.Identity;
         }
 
-        public void NotifyIdentityHint(byte[] psk_identity_hint)
+        public void NotifyIdentityHint(byte[] pskIdentityHint)
         {
         }
 

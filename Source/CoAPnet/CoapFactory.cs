@@ -16,7 +16,10 @@ namespace CoAPnet
 
         public ILowLevelCoapClient CreateLowLevelClient(CoapNetLogger logger)
         {
-            if (logger is null) new ArgumentNullException(nameof(logger));
+            if (logger is null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
 
             return new LowLevelCoapClient(logger);
         }
@@ -28,7 +31,10 @@ namespace CoAPnet
 
         public ICoapClient CreateClient(CoapNetLogger logger)
         {
-            if (logger is null) new ArgumentNullException(nameof(logger));
+            if (logger is null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
 
             return new CoapClient(logger);
         }

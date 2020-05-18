@@ -7,7 +7,10 @@ namespace CoAPnet.Protocol.BlockTransfer
     {
         public uint Encode(CoapBlockTransferOptionValue value)
         {
-            if (value is null) throw new ArgumentNullException(nameof(value));
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
 
             if (value.Size > 1024)
             {

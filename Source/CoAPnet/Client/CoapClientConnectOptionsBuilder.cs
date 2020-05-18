@@ -40,7 +40,7 @@ namespace CoAPnet.Client
 
         public CoapClientConnectOptionsBuilder WithUnencryptedPort()
         {
-            return WithPort(CoapDefaultPort.Unencrpyted);
+            return WithPort(CoapDefaultPort.Unencrypted);
         }
 
         public CoapClientConnectOptionsBuilder WithTcpTransportLayer()

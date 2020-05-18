@@ -24,12 +24,7 @@
 
         public override int GetHashCode()
         {
-            if (Value == null)
-            {
-                return 0;
-            }
-
-            return Value.GetHashCode();
+            return Value == null ? 0 : Value.GetHashCode();
         }
     }
 }

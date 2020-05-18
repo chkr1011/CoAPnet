@@ -57,7 +57,7 @@ namespace CoAPnet.Extensions.DTLS
             _udpTransport?.Dispose();
         }
 
-        ProtocolVersion ConvertProtocolVersion(DtlsVersion dtlsVersion)
+        static ProtocolVersion ConvertProtocolVersion(DtlsVersion dtlsVersion)
         {
             if (dtlsVersion == DtlsVersion.V1_0)
             {

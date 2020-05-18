@@ -28,7 +28,7 @@
 
         public static CoapMessageCode InternalServerError { get; } = new CoapMessageCode(5, 0);
         public static CoapMessageCode NotImplemented { get; } = new CoapMessageCode(5, 1);
-        public static CoapMessageCode BadBateway { get; } = new CoapMessageCode(5, 2);
+        public static CoapMessageCode BadGateway { get; } = new CoapMessageCode(5, 2);
         public static CoapMessageCode ServiceUnavailable { get; } = new CoapMessageCode(5, 3);
         public static CoapMessageCode GatewayTimeout { get; } = new CoapMessageCode(5, 4);
         public static CoapMessageCode ProxyingNotSupported { get; } = new CoapMessageCode(5, 5);

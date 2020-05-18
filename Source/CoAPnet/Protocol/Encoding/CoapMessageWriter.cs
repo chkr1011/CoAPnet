@@ -9,7 +9,7 @@ namespace CoAPnet.Protocol.Encoding
         readonly MemoryBuffer _memoryBuffer = new MemoryBuffer(128);
 
         int _bitOffset = 7;
-        byte _byteCache = 0x0;
+        byte _byteCache;
 
         public void WriteBits(int data, int count)
         {

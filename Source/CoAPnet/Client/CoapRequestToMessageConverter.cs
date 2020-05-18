@@ -11,7 +11,10 @@ namespace CoAPnet.Client
 
         public CoapMessage Convert(CoapRequest request)
         {
-            if (request is null) throw new ArgumentNullException(nameof(request));
+            if (request is null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
 
             var message = new CoapMessage
             {
@@ -56,7 +59,7 @@ namespace CoAPnet.Client
                 return;
             }
 
-            var paths = request.Options.UriPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var paths = request.Options.UriPath.Split(new [] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var path in paths)
             {

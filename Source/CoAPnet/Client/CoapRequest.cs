@@ -8,10 +8,7 @@ namespace CoAPnet.Client
 
         public CoapRequestOptions Options { get; set; } = new CoapRequestOptions();
 
-        public ArraySegment<byte> Payload
-        {
-            get; set;
-        }
+        public ArraySegment<byte> Payload { get; set; }
     }
 }
 

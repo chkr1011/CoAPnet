@@ -14,6 +14,8 @@ namespace CoAPnet.Extensions.DTLS
             _preSharedKey = preSharedKey ?? throw new ArgumentNullException(nameof(preSharedKey));
         }
 
+        public byte ReceivedAlert { get; private set; }
+
         public override ProtocolVersion MinimumVersion => _protocolVersion;
 
         public override ProtocolVersion ClientVersion => _protocolVersion;
@@ -26,6 +28,13 @@ namespace CoAPnet.Extensions.DTLS
                 CipherSuite.TLS_PSK_WITH_AES_256_CCM,
                 CipherSuite.TLS_PSK_WITH_AES_256_CCM_8,
             };
+        }
+
+        public override void NotifyAlertReceived(byte alertLevel, byte alertDescription)
+        {
+            ReceivedAlert = alertDescription;
+
+            base.NotifyAlertReceived(alertLevel, alertDescription);
         }
 
         public override void NotifySecureRenegotiation(bool secureRenegotiation)

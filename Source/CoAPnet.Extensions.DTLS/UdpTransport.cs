@@ -12,6 +12,8 @@ namespace CoAPnet.Extensions.DTLS
         readonly CoapTransportLayerConnectOptions _connectOptions;
         readonly Socket _socket;
 
+        bool _isDisposed;
+
         public UdpTransport(CoapTransportLayerConnectOptions connectOptions)
         {
             _connectOptions = connectOptions ?? throw new ArgumentNullException(nameof(connectOptions));
@@ -62,25 +64,25 @@ namespace CoAPnet.Extensions.DTLS
                 throw new ArgumentNullException(nameof(buf));
             }
 
-            try
+            if (_isDisposed)
             {
-                _socket.SendTo(buf, off, len, SocketFlags.None, _connectOptions.EndPoint);
+                throw new CoapCommunicationException("The connection is closed.", null);
             }
-            catch (ObjectDisposedException)
-            {
-                throw new CoapCommunicationException("The connection was closed.", null);
-            }       
+
+            _socket.SendTo(buf, off, len, SocketFlags.None, _connectOptions.EndPoint);
         }
 
         public void Dispose()
         {
+            _isDisposed = true;
+
+            // There is no need to call "Disconnect" because we use UDP.
             _socket?.Dispose();
         }
 
         public void Close()
         {
-            // There is no need to call "Disconnect" because we use UDP.
-            _socket?.Dispose();
+            Dispose();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace CoAPnet.Extensions.DTLS
     {
         UdpTransport _udpTransport;
         DtlsTransport _dtlsTransport;
+        DtlsClient _dtlsClient;
 
         public IDtlsCredentials Credentials
         {
@@ -24,11 +25,26 @@ namespace CoAPnet.Extensions.DTLS
 
         public Task ConnectAsync(CoapTransportLayerConnectOptions connectOptions, CancellationToken cancellationToken)
         {
-            _udpTransport = new UdpTransport(connectOptions);
+            try
+            {
+                _udpTransport = new UdpTransport(connectOptions);
 
-            var clientProtocol = new DtlsClientProtocol(new SecureRandom());
-            var client = new DtlsClient(ConvertProtocolVersion(DtlsVersion), (PreSharedKey)Credentials);
-            _dtlsTransport = clientProtocol.Connect(client, _udpTransport);
+                var clientProtocol = new DtlsClientProtocol(new SecureRandom());
+                _dtlsClient = new DtlsClient(ConvertProtocolVersion(DtlsVersion), (PreSharedKey)Credentials);
+                _dtlsTransport = clientProtocol.Connect(_dtlsClient, _udpTransport);
+            }
+            catch
+            {
+                if (_dtlsClient.ReceivedAlert != 0)
+                {
+                    throw new DtlsException($"Received alert {AlertDescription.GetText(_dtlsClient.ReceivedAlert)}.", null)
+                    {
+                        ReceivedAlert = _dtlsClient.ReceivedAlert
+                    };
+                }
+
+                throw;
+            }
 
             return Task.FromResult(0);
         }

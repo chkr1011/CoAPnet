@@ -39,9 +39,9 @@ namespace CoAPnet.Client
             _connectOptions = options ?? throw new ArgumentNullException(nameof(options));
 
             await _lowLevelClient.ConnectAsync(options, cancellationToken).ConfigureAwait(false);
+            
             _cancellationToken = new CancellationTokenSource();
-
-            ParallelTask.Run(() => ReceiveMessages(_cancellationToken.Token), _cancellationToken.Token);
+            ParallelTask.StartLongRunning(() => ReceiveMessages(_cancellationToken.Token), _cancellationToken.Token);
         }
 
         public async Task<CoapResponse> RequestAsync(CoapRequest request, CancellationToken cancellationToken)
@@ -160,6 +160,12 @@ namespace CoAPnet.Client
                 try
                 {
                     var message = await _lowLevelClient.ReceiveAsync(cancellationToken).ConfigureAwait(false);
+                    if (message == null)
+                    {
+                        continue;
+                    }
+
+                    cancellationToken.ThrowIfCancellationRequested();
 
                     if (!_messageDispatcher.TryHandleReceivedMessage(message))
                     {
@@ -168,6 +174,9 @@ namespace CoAPnet.Client
                             _logger.Trace(nameof(CoapClient), "Received an unexpected message ({0}).", message.Id);
                         }
                     }
+                }
+                catch (OperationCanceledException)
+                {
                 }
                 catch (Exception exception)
                 {

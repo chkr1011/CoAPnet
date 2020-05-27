@@ -13,6 +13,7 @@
     <description>CoAPnet is a high performance .NET library for CoAP based communication. It provides a CoAP client and a CoAP server. It also has DTLS support out of the box.</description>
     <releaseNotes>
 [DTLS] Improved error handling and exposed received DTLS alerts.
+[DTLS] Improved support for cancellation token.
     </releaseNotes>
     <copyright>Copyright Christian Kratky 2019-2020</copyright>
     <tags>CoAP HTTP DTLS Message Telemetry Transport CoAPClient CoAPServer NETStandard IoT InternetOfThings Messaging Hardware Arduino Sensor Actuator M2M ESP Smart Home Cities Automation Xamarin</tags>

@@ -34,14 +34,24 @@ namespace CoAPnet.LowLevelClient
         public async Task ConnectAsync(CoapClientConnectOptions options, CancellationToken cancellationToken)
         {
             _connectOptions = options ?? throw new ArgumentNullException(nameof(options));
+
+            cancellationToken.ThrowIfCancellationRequested();
+            
             _transportLayerAdapter = new CoapTransportLayerAdapter(options.TransportLayer, _logger);
-
-            var transportLayerConnectOptions = new CoapTransportLayerConnectOptions
+            try
             {
-                EndPoint = await ResolveIPEndPoint(options).ConfigureAwait(false)
-            };
+                var transportLayerConnectOptions = new CoapTransportLayerConnectOptions
+                {
+                    EndPoint = await ResolveIPEndPoint(options).ConfigureAwait(false)
+                };
 
-            await _transportLayerAdapter.ConnectAsync(transportLayerConnectOptions, cancellationToken).ConfigureAwait(false);
+                await _transportLayerAdapter.ConnectAsync(transportLayerConnectOptions, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                _transportLayerAdapter.Dispose();
+                throw;
+            }
         }
 
         public Task SendAsync(CoapMessage message, CancellationToken cancellationToken)
@@ -58,6 +68,11 @@ namespace CoAPnet.LowLevelClient
         public async Task<CoapMessage> ReceiveAsync(CancellationToken cancellationToken)
         {
             var datagramLength = await _transportLayerAdapter.ReceiveAsync(_receiveBuffer, cancellationToken).ConfigureAwait(false);
+            if (datagramLength == 0)
+            {
+                return null;
+            }
+
             return _messageDecoder.Decode(new ArraySegment<byte>(_receiveBuffer.Array, 0, datagramLength));
         }
 

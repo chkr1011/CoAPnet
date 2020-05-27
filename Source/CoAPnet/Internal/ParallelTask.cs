@@ -6,7 +6,7 @@ namespace CoAPnet.Internal
 {
     public static class ParallelTask
     {
-        public static void Run(Action action, CancellationToken cancellationToken)
+        public static void Start(Action action, CancellationToken cancellationToken)
         {
             if (action is null)
             {
@@ -16,7 +16,7 @@ namespace CoAPnet.Internal
             Task.Run(action, cancellationToken);
         }
 
-        public static void Run(Func<Task> function, CancellationToken cancellationToken)
+        public static void Start(Func<Task> function, CancellationToken cancellationToken)
         {
             if (function is null)
             {
@@ -24,6 +24,16 @@ namespace CoAPnet.Internal
             }
 
             Task.Run(function, cancellationToken);
+        }
+
+        public static void StartLongRunning(Func<Task> function, CancellationToken cancellationToken)
+        {
+            if (function is null)
+            {
+                throw new ArgumentNullException(nameof(function));
+            }
+
+            Task.Factory.StartNew(function, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
     }
 }

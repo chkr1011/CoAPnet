@@ -38,23 +38,12 @@ namespace CoAPnet.Extensions.DTLS
                 throw new ArgumentNullException(nameof(buf));
             }
 
-            try
-            {
-                EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                var length = _socket.ReceiveFrom(buf, off, len, SocketFlags.None, ref remoteEndPoint);
+            EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            var length = _socket.ReceiveFrom(buf, off, len, SocketFlags.None, ref remoteEndPoint);
 
-                return length;
-            }
-            catch (SocketException)
-            {
-                // Indicate a graceful socket close.
-                return 0;
-            }
-            catch (ObjectDisposedException)
-            {
-                // Indicate a graceful socket close.
-                return 0;
-            }
+            Console.WriteLine(length);
+
+            return length;
         }
 
         public void Send(byte[] buf, int off, int len)

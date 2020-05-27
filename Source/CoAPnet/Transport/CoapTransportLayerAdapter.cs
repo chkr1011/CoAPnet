@@ -19,10 +19,21 @@ namespace CoAPnet.Transport
 
         public async Task ConnectAsync(CoapTransportLayerConnectOptions connectOptions, CancellationToken cancellationToken)
         {
+            if (connectOptions == null)
+            {
+                throw new ArgumentNullException(nameof(connectOptions));
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 _logger.Information(nameof(CoapTransportLayerAdapter), $"Connecting with '{connectOptions.EndPoint}'...");
                 await _transportLayer.ConnectAsync(connectOptions, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception exception)
             {

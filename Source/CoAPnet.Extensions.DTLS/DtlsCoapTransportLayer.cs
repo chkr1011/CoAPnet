@@ -4,11 +4,14 @@ using Org.BouncyCastle.Security;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CoAPnet.Internal;
 
 namespace CoAPnet.Extensions.DTLS
 {
     public sealed class DtlsCoapTransportLayer : ICoapTransportLayer
     {
+        readonly SecureRandom _secureRandom = new SecureRandom();
+
         UdpTransport _udpTransport;
         DtlsTransport _dtlsTransport;
         DtlsClient _dtlsClient;
@@ -23,18 +26,38 @@ namespace CoAPnet.Extensions.DTLS
             get; set;
         } = DtlsVersion.V1_2;
 
-        public Task ConnectAsync(CoapTransportLayerConnectOptions connectOptions, CancellationToken cancellationToken)
+        public async Task ConnectAsync(CoapTransportLayerConnectOptions connectOptions, CancellationToken cancellationToken)
         {
+            if (connectOptions == null)
+            {
+                throw new ArgumentNullException(nameof(connectOptions));
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 _udpTransport = new UdpTransport(connectOptions);
-
-                var clientProtocol = new DtlsClientProtocol(new SecureRandom());
+                var clientProtocol = new DtlsClientProtocol(_secureRandom);
                 _dtlsClient = new DtlsClient(ConvertProtocolVersion(DtlsVersion), (PreSharedKey)Credentials);
-                _dtlsTransport = clientProtocol.Connect(_dtlsClient, _udpTransport);
+
+                using (cancellationToken.Register(() =>
+                {
+                    _udpTransport.Close();
+                }))
+                {
+                    _dtlsTransport = await Task.Run(() => clientProtocol.Connect(_dtlsClient, _udpTransport), cancellationToken).ConfigureAwait(false);
+                }
             }
             catch
             {
+                _udpTransport?.Dispose();
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    throw new OperationCanceledException();
+                }
+
                 if (_dtlsClient.ReceivedAlert != 0)
                 {
                     throw new DtlsException($"Received alert {AlertDescription.GetText(_dtlsClient.ReceivedAlert)}.", null)
@@ -45,24 +68,22 @@ namespace CoAPnet.Extensions.DTLS
 
                 throw;
             }
-
-            return Task.FromResult(0);
         }
 
         public Task<int> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
         {
-            int received;
-            do
-            {
-                received = _dtlsTransport.Receive(buffer.Array, buffer.Offset, buffer.Count, 100);
-            }
-            while (received == 0 && !cancellationToken.IsCancellationRequested);
+            cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult(received);
+            using (cancellationToken.Register(() => _udpTransport.Close()))
+            {
+                var received = _dtlsTransport.Receive(buffer.Array, buffer.Offset, buffer.Count, 0);
+                return Task.FromResult(received);
+            }
         }
 
         public Task SendAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             _dtlsTransport.Send(buffer.Array, buffer.Offset, buffer.Count);
             return Task.FromResult(0);
         }

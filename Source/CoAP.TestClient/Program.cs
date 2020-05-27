@@ -13,6 +13,39 @@ namespace CoAP.TestClient
     {
         static async Task Main()
         {
+            var coapFactory = new CoapFactory();
+            coapFactory.DefaultLogger.RegisterSink(new CoapNetLoggerConsoleSink());
+
+            using var coapClient = coapFactory.CreateClient();
+
+            Console.WriteLine("< CONNECTING...");
+
+            var connectOptions = new CoapClientConnectOptionsBuilder()
+                .WithHost("GW-B8D7AF2B3EA3.fritz.box")
+                .WithHost("127.0.0.1")
+                .WithDtlsTransportLayer(o =>
+                    o.WithPreSharedKey("727360dd-d27a-4ca0-9be8-f626de849d7a", "7x3A1gqWvu9cBGD7"))
+                .Build();
+
+            using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+            {
+                await coapClient.ConnectAsync(connectOptions, cancellationTokenSource.Token);
+            }
+
+            var request = new CoapRequestBuilder()
+                .WithMethod(CoapRequestMethod.Get)
+                .WithPath("15001")
+                .Build();
+
+            using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+            {
+                var response = await coapClient.RequestAsync(request, cancellationTokenSource.Token);
+                PrintResponse(response);
+            }
+        }
+
+        static async Task Main3()
+        {
             //await Main2();
 
             //Console.WriteLine("Press any key to exit.");
@@ -28,7 +61,7 @@ namespace CoAP.TestClient
                 var connectOptions = new CoapClientConnectOptionsBuilder()
                     .WithHost("GW-B8D7AF2B3EA3.fritz.box")
                     .WithDtlsTransportLayer(o =>
-                        o.WithPreSharedKey("IDENTITY", "lqxbBH6o2eAKSo5A"))
+                        o.WithPreSharedKey("727360dd-d27a-4ca0-9be8-f626de849d7a", "7x3A1gqWvu9cBGD7_"))
                     .Build();
 
                 using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10)))

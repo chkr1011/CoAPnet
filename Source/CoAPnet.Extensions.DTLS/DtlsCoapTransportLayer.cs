@@ -2,9 +2,9 @@
 using Org.BouncyCastle.Crypto.Tls;
 using Org.BouncyCastle.Security;
 using System;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using CoAPnet.Internal;
 
 namespace CoAPnet.Extensions.DTLS
 {
@@ -72,12 +72,28 @@ namespace CoAPnet.Extensions.DTLS
 
         public Task<int> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
         {
+            if (buffer.Array == null)
+            {
+                throw new ArgumentNullException(nameof(buffer));
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             using (cancellationToken.Register(() => _udpTransport.Close()))
             {
-                var received = _dtlsTransport.Receive(buffer.Array, buffer.Offset, buffer.Count, 0);
-                return Task.FromResult(received);
+                try
+                {
+                    var received = _dtlsTransport.Receive(buffer.Array, buffer.Offset, buffer.Count, 0);
+                    return Task.FromResult(received);
+                }
+                catch (ObjectDisposedException)
+                {
+                    return Task.FromResult(0);
+                }
+                catch (SocketException)
+                {
+                    return Task.FromResult(0);
+                }
             }
         }
 

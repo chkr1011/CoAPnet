@@ -15,9 +15,6 @@ namespace CoAPnet.Client
 
         public TimeSpan CommunicationTimeout { get; set; } = TimeSpan.FromSeconds(10);
 
-        public ICoapTransportLayer TransportLayer
-        {
-            get; set;
-        }
+        public Func<ICoapTransportLayer> TransportLayerFactory { get; set; } = () => new UdpCoapTransportLayer();
     }
 }

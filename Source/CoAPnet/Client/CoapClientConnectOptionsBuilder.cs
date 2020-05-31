@@ -8,18 +8,8 @@ namespace CoAPnet.Client
     {
         readonly CoapClientConnectOptions _options = new CoapClientConnectOptions
         {
-            TransportLayer = new UdpCoapTransportLayer() // This is the protocols default transport.
+            TransportLayerFactory = () => new UdpCoapTransportLayer() // This is the protocols default transport.
         };
-
-        public CoapClientConnectOptions Build()
-        {
-            if (_options.TransportLayer == null)
-            {
-                throw new CoapClientConfigurationInvalidException("Transport layer is not set.", null);
-            }
-
-            return _options;
-        }
 
         public CoapClientConnectOptionsBuilder WithHost(string value)
         {
@@ -45,20 +35,30 @@ namespace CoAPnet.Client
 
         public CoapClientConnectOptionsBuilder WithTcpTransportLayer()
         {
-            _options.TransportLayer = new TcpCoapTransportLayer();
+            _options.TransportLayerFactory = () => new TcpCoapTransportLayer();
             return this;
         }
 
-        public CoapClientConnectOptionsBuilder WithTransportLayer(ICoapTransportLayer value)
+        public CoapClientConnectOptionsBuilder WithTransportLayer(Func<ICoapTransportLayer> transportLayerFactory)
         {
-            _options.TransportLayer = value ?? throw new ArgumentNullException(nameof(value));
+            _options.TransportLayerFactory = transportLayerFactory ?? throw new ArgumentNullException(nameof(transportLayerFactory));
             return this;
         }
 
         public CoapClientConnectOptionsBuilder WithUdpTransportLayer()
         {
-            _options.TransportLayer = new UdpCoapTransportLayer();
+            _options.TransportLayerFactory = () => new UdpCoapTransportLayer();
             return this;
+        }
+
+        public CoapClientConnectOptions Build()
+        {
+            if (_options.TransportLayerFactory == null)
+            {
+                throw new CoapClientConfigurationInvalidException("Transport layer is not set.", null);
+            }
+
+            return _options;
         }
     }
 }

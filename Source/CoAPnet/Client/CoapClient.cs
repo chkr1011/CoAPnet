@@ -150,6 +150,9 @@ namespace CoAPnet.Client
 
         public void Dispose()
         {
+            _cancellationToken?.Cancel(false);
+            _cancellationToken?.Dispose();
+
             _lowLevelClient?.Dispose();
         }
 
@@ -160,12 +163,16 @@ namespace CoAPnet.Client
                 try
                 {
                     var message = await _lowLevelClient.ReceiveAsync(cancellationToken).ConfigureAwait(false);
+
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
                     if (message == null)
                     {
                         continue;
                     }
-
-                    cancellationToken.ThrowIfCancellationRequested();
 
                     if (!_messageDispatcher.TryHandleReceivedMessage(message))
                     {
@@ -180,7 +187,7 @@ namespace CoAPnet.Client
                 }
                 catch (Exception exception)
                 {
-                    _logger.Error(nameof(CoapClient), exception, "Error while receiving message.");
+                    _logger.Error(nameof(CoapClient), exception, "Error while receiving messages.");
                 }
             }
         }

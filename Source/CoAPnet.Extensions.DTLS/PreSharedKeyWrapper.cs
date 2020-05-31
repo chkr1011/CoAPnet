@@ -3,7 +3,7 @@ using System;
 
 namespace CoAPnet.Extensions.DTLS
 {
-    public class PreSharedKeyWrapper : TlsPskIdentity
+    public sealed class PreSharedKeyWrapper : TlsPskIdentity
     {
         readonly PreSharedKey _preSharedKey;
 

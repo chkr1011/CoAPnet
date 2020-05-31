@@ -3,7 +3,7 @@ using System;
 
 namespace CoAPnet.Extensions.DTLS
 {
-    public class DtlsClient : DefaultTlsClient
+    public sealed class DtlsClient : DefaultTlsClient
     {
         readonly ProtocolVersion _protocolVersion;
         readonly PreSharedKey _preSharedKey;

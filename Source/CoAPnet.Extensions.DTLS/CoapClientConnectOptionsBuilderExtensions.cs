@@ -17,7 +17,7 @@ namespace CoAPnet.Extensions.DTLS
                 throw new ArgumentNullException(nameof(options));
             }
 
-            clientConnectOptionsBuilder.WithTransportLayer(new DtlsCoapTransportLayer()
+            clientConnectOptionsBuilder.WithTransportLayer(() => new DtlsCoapTransportLayer
             {
                 Credentials = options.Credentials
             });

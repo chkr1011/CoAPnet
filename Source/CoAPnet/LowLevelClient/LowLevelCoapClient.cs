@@ -35,9 +35,16 @@ namespace CoAPnet.LowLevelClient
         {
             _connectOptions = options ?? throw new ArgumentNullException(nameof(options));
 
+            var transportLayer = options.TransportLayerFactory?.Invoke();
+
+            if (transportLayer == null)
+            {
+                throw new InvalidOperationException("No CoAP transport layer is set.");
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
             
-            _transportLayerAdapter = new CoapTransportLayerAdapter(options.TransportLayer, _logger);
+            _transportLayerAdapter = new CoapTransportLayerAdapter(transportLayer, _logger);
             try
             {
                 var transportLayerConnectOptions = new CoapTransportLayerConnectOptions
@@ -93,14 +100,21 @@ namespace CoAPnet.LowLevelClient
                 await Task.FromResult(0);
                 throw new NotSupportedException("Resolving DNS end points is not supported for NETSTANDARD1_3. Please pass IP address instead.");
 #else
-                var hostIPAddresses = await Dns.GetHostAddressesAsync(connectOptions.Host).ConfigureAwait(false);
-                if (hostIPAddresses.Length == 0)
+                try
                 {
-                    throw new CoapCommunicationException("Failed to resolve DNS end point", null);
-                }
+                    var hostIPAddresses = await Dns.GetHostAddressesAsync(connectOptions.Host).ConfigureAwait(false);
+                    if (hostIPAddresses.Length == 0)
+                    {
+                        throw new CoapCommunicationException("Failed to resolve DNS end point", null);
+                    }
 
-                // We only use the first address for now.
-                return new IPEndPoint(hostIPAddresses[0], _connectOptions.Port);
+                    // We only use the first address for now.
+                    return new IPEndPoint(hostIPAddresses[0], _connectOptions.Port);
+                }
+                catch (Exception exception)
+                {
+                    throw new CoapCommunicationException("Error while resolving DNS name.", exception);
+                }
 #endif
             }
         }

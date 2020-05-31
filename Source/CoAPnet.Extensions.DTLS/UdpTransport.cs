@@ -39,11 +39,7 @@ namespace CoAPnet.Extensions.DTLS
             }
 
             EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
-            var length = _socket.ReceiveFrom(buf, off, len, SocketFlags.None, ref remoteEndPoint);
-
-            Console.WriteLine(length);
-
-            return length;
+            return _socket.ReceiveFrom(buf, off, len, SocketFlags.None, ref remoteEndPoint);
         }
 
         public void Send(byte[] buf, int off, int len)
@@ -61,17 +57,17 @@ namespace CoAPnet.Extensions.DTLS
             _socket.SendTo(buf, off, len, SocketFlags.None, _connectOptions.EndPoint);
         }
 
+        public void Close()
+        {
+            Dispose();
+        }
+
         public void Dispose()
         {
             _isDisposed = true;
 
             // There is no need to call "Disconnect" because we use UDP.
             _socket?.Dispose();
-        }
-
-        public void Close()
-        {
-            Dispose();
         }
     }
 }

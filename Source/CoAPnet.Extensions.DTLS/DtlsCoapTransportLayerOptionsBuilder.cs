@@ -3,10 +3,16 @@ using System.Text;
 
 namespace CoAPnet.Extensions.DTLS
 {
-    public class DtlsCoapTransportLayerOptionsBuilder
+    public sealed class DtlsCoapTransportLayerOptionsBuilder
     {
         readonly DtlsCoapTransportLayerOptions _options = new DtlsCoapTransportLayerOptions();
 
+        public DtlsCoapTransportLayerOptionsBuilder WithDtlsVersion(DtlsVersion version)
+        {
+            _options.DtlsVersion = version;
+            return this;
+        }
+        
         public DtlsCoapTransportLayerOptionsBuilder WithPreSharedKey(byte[] identity, byte[] key)
         {
             if (identity is null)

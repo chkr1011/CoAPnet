@@ -41,10 +41,7 @@ namespace CoAPnet.Extensions.DTLS
                 var clientProtocol = new DtlsClientProtocol(_secureRandom);
                 _dtlsClient = new DtlsClient(ConvertProtocolVersion(DtlsVersion), (PreSharedKey)Credentials);
 
-                using (cancellationToken.Register(() =>
-                {
-                    _udpTransport.Close();
-                }))
+                using (cancellationToken.Register(() => _udpTransport?.Close()))
                 {
                     _dtlsTransport = await Task.Run(() => clientProtocol.Connect(_dtlsClient, _udpTransport), cancellationToken).ConfigureAwait(false);
                 }
@@ -53,20 +50,12 @@ namespace CoAPnet.Extensions.DTLS
             {
                 _udpTransport?.Dispose();
 
-                if (cancellationToken.IsCancellationRequested)
+                cancellationToken.ThrowIfCancellationRequested();
+                
+                throw new DtlsException($"Received alert {AlertDescription.GetText(_dtlsClient?.ReceivedAlert ?? 0xFF)}.", null)
                 {
-                    throw new OperationCanceledException();
-                }
-
-                if (_dtlsClient.ReceivedAlert != 0)
-                {
-                    throw new DtlsException($"Received alert {AlertDescription.GetText(_dtlsClient.ReceivedAlert)}.", null)
-                    {
-                        ReceivedAlert = _dtlsClient.ReceivedAlert
-                    };
-                }
-
-                throw;
+                    ReceivedAlert = _dtlsClient?.ReceivedAlert ?? 0xFF
+                };
             }
         }
 
@@ -100,6 +89,7 @@ namespace CoAPnet.Extensions.DTLS
         public Task SendAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            
             _dtlsTransport.Send(buffer.Array, buffer.Offset, buffer.Count);
             return Task.FromResult(0);
         }

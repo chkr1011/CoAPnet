@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CoAPnet.Protocol;
 
-namespace CoAPnet.CoapServer
+namespace CoAPnet.Server
 {
     public interface ICoapServer : IDisposable
     {

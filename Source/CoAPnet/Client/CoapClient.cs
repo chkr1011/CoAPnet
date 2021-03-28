@@ -150,10 +150,15 @@ namespace CoAPnet.Client
 
         public void Dispose()
         {
-            _cancellationToken?.Cancel(false);
-            _cancellationToken?.Dispose();
-
-            _lowLevelClient?.Dispose();
+            try
+            {
+                _cancellationToken?.Cancel(false);
+            }
+            finally
+            {
+                _cancellationToken?.Dispose();
+                _lowLevelClient?.Dispose();
+            }
         }
 
         async Task ReceiveMessages(CancellationToken cancellationToken)

@@ -3,6 +3,7 @@ using CoAPnet.Client;
 using CoAPnet.Extensions.DTLS;
 using CoAPnet.Logging;
 using System;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace CoAP.TestClient
 {
     static class Program
     {
-        static async Task Main()
+        static async Task Main22()
         {
             var coapFactory = new CoapFactory();
             coapFactory.DefaultLogger.RegisterSink(new CoapNetLoggerConsoleSink());
@@ -22,9 +23,9 @@ namespace CoAP.TestClient
 
             var connectOptions = new CoapClientConnectOptionsBuilder()
                 .WithHost("GW-B8D7AF2B3EA3.fritz.box")
-                .WithHost("127.0.0.1")
+                //.WithHost("127.0.0.1")
                 .WithDtlsTransportLayer(o =>
-                    o.WithPreSharedKey("727360dd-d27a-4ca0-9be8-f626de849d7a", "7x3A1gqWvu9cBGD7"))
+                    o.WithPreSharedKey("Client_identity", "7x3A1gqWvu9cBGD7"))
                 .Build();
 
             using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
@@ -44,13 +45,10 @@ namespace CoAP.TestClient
             }
         }
 
-        static async Task Main3()
+        static async Task MainPsk()
         {
-            //await Main2();
-
-            //Console.WriteLine("Press any key to exit.");
-            //Console.ReadLine();
-
+            // Generate new PSK Token.
+            
             var coapFactory = new CoapFactory();
             coapFactory.DefaultLogger.RegisterSink(new CoapNetLoggerConsoleSink());
 
@@ -61,7 +59,38 @@ namespace CoAP.TestClient
                 var connectOptions = new CoapClientConnectOptionsBuilder()
                     .WithHost("GW-B8D7AF2B3EA3.fritz.box")
                     .WithDtlsTransportLayer(o =>
-                        o.WithPreSharedKey("727360dd-d27a-4ca0-9be8-f626de849d7a", "7x3A1gqWvu9cBGD7_"))
+                        o.WithPreSharedKey("Client_identity", File.ReadAllText(@"D:\SourceCode\Wirehome.Private\Tradfri\Key.txt")))
+                    .Build();
+
+                using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+                {
+                    await coapClient.ConnectAsync(connectOptions, cancellationTokenSource.Token).ConfigureAwait(false);
+                }
+
+                var request = new CoapRequestBuilder()
+                    .WithMethod(CoapRequestMethod.Post)
+                    .WithPath("15011/9063")
+                    .WithPayload("{\"9090\":\"WH\"}")
+                    .Build();
+
+                var response = await coapClient.RequestAsync(request, CancellationToken.None).ConfigureAwait(false);
+                PrintResponse(response);
+            }
+        }
+
+        static async Task Main()
+        {
+            var coapFactory = new CoapFactory();
+            coapFactory.DefaultLogger.RegisterSink(new CoapNetLoggerConsoleSink());
+
+            using (var coapClient = coapFactory.CreateClient())
+            {
+                Console.WriteLine("< CONNECTING...");
+
+                var connectOptions = new CoapClientConnectOptionsBuilder()
+                    .WithHost("GW-B8D7AF2B3EA3.fritz.box")
+                    .WithDtlsTransportLayer(o =>
+                        o.WithPreSharedKey("WH", "UP3ThsT7ineCsKoc"))
                     .Build();
 
                 using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
@@ -108,9 +137,6 @@ namespace CoAP.TestClient
                 Console.ReadLine();
 
                 await coapClient.StopObservationAsync(observeResponse, CancellationToken.None).ConfigureAwait(false);
-
-                Console.WriteLine("Press any key to exit.");
-                Console.ReadLine();
             }
         }
 
@@ -129,7 +155,7 @@ namespace CoAP.TestClient
         {
             Console.WriteLine("> RESPONSE");
             Console.WriteLine("   + Status         = " + response.StatusCode);
-            Console.WriteLine("   + Status code    = " + (int)response.StatusCode);
+            Console.WriteLine("   + Status code    = " + (int) response.StatusCode);
             Console.WriteLine("   + Content format = " + response.Options.ContentFormat);
             Console.WriteLine("   + Max age        = " + response.Options.MaxAge);
             Console.WriteLine("   + E tag          = " + ByteArrayToString(response.Options.ETag));
@@ -155,7 +181,7 @@ namespace CoAP.TestClient
             return hex.ToString();
         }
 
-        static async Task Main2()
+        static async Task Main9()
         {
             var coapFactory = new CoapFactory();
             coapFactory.DefaultLogger.RegisterSink(new CoapNetLoggerConsoleSink());

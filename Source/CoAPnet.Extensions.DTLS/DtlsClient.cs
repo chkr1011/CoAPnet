@@ -5,20 +5,19 @@ namespace CoAPnet.Extensions.DTLS
 {
     public sealed class DtlsClient : DefaultTlsClient
     {
-        readonly ProtocolVersion _protocolVersion;
         readonly PreSharedKey _preSharedKey;
 
         public DtlsClient(ProtocolVersion protocolVersion, PreSharedKey preSharedKey)
         {
-            _protocolVersion = protocolVersion ?? throw new ArgumentNullException(nameof(protocolVersion));
+            MinimumVersion = protocolVersion ?? throw new ArgumentNullException(nameof(protocolVersion));
             _preSharedKey = preSharedKey ?? throw new ArgumentNullException(nameof(preSharedKey));
         }
 
         public byte ReceivedAlert { get; private set; }
 
-        public override ProtocolVersion MinimumVersion => _protocolVersion;
+        public override ProtocolVersion MinimumVersion { get; }
 
-        public override ProtocolVersion ClientVersion => _protocolVersion;
+        public override ProtocolVersion ClientVersion => MinimumVersion;
 
         public override int[] GetCipherSuites()
         {
@@ -26,7 +25,7 @@ namespace CoAPnet.Extensions.DTLS
                 CipherSuite.TLS_PSK_WITH_AES_128_CCM,
                 CipherSuite.TLS_PSK_WITH_AES_128_CCM_8,
                 CipherSuite.TLS_PSK_WITH_AES_256_CCM,
-                CipherSuite.TLS_PSK_WITH_AES_256_CCM_8,
+                CipherSuite.TLS_PSK_WITH_AES_256_CCM_8
             };
         }
 

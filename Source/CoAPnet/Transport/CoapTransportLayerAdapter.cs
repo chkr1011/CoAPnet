@@ -28,7 +28,7 @@ namespace CoAPnet.Transport
 
             try
             {
-                _logger.Information(nameof(CoapTransportLayerAdapter), $"Connecting with '{connectOptions.EndPoint}'...");
+                _logger.Information(nameof(CoapTransportLayerAdapter), "Connecting with '{0}'...", connectOptions.EndPoint);
                 await _transportLayer.ConnectAsync(connectOptions, cancellationToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -45,7 +45,7 @@ namespace CoAPnet.Transport
         {
             try
             {
-                _logger.Trace(nameof(CoapTransportLayerAdapter), $"Sending {buffer.Count} bytes...");
+                _logger.Trace(nameof(CoapTransportLayerAdapter), "Sending {0} bytes...", buffer.Count);
                 await _transportLayer.SendAsync(buffer, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exception)
@@ -60,7 +60,7 @@ namespace CoAPnet.Transport
             {
                 var receivedBytes = await _transportLayer.ReceiveAsync(receiveBuffer, cancellationToken).ConfigureAwait(false);
 
-                _logger.Trace(nameof(CoapTransportLayerAdapter), $"Received {receivedBytes} bytes...");
+                _logger.Trace(nameof(CoapTransportLayerAdapter), "Received {0} bytes...", receivedBytes);
 
                 return receivedBytes;
             }

@@ -29,11 +29,12 @@ namespace CoAPnet.Transport
 
         public void Dispose()
         {
-#if NETSTANDARD1_3 || NETSTANDARD2_0
+#if NETSTANDARD1_3 || NETSTANDARD2_0 || NET5_0
             _tcpClient?.Dispose();
 #else
-            _tcpClient.Close();
+            _tcpClient?.Close();
 #endif
+            
             _networkStream?.Dispose();
         }
 

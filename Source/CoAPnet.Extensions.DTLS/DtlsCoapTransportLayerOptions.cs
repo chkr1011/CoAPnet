@@ -1,10 +1,17 @@
 ﻿namespace CoAPnet.Extensions.DTLS
 {
-    public class DtlsCoapTransportLayerOptions
+    public sealed class DtlsCoapTransportLayerOptions
     {
         public IDtlsCredentials Credentials
         {
-            get; set;
+            get;
+            set;
         }
+
+        public DtlsVersion DtlsVersion
+        {
+            get;
+            set;
+        } = DtlsVersion.V1_2;
     }
 }

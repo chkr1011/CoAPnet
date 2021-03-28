@@ -10,9 +10,10 @@ namespace CoAPnet.Extensions.DTLS
     public sealed class UdpTransport : DatagramTransport, IDisposable
     {
         readonly CoapTransportLayerConnectOptions _connectOptions;
-        readonly Socket _socket;
-
-        bool _isDisposed;
+        
+        EndPoint _remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
+        
+        Socket _socket;
 
         public UdpTransport(CoapTransportLayerConnectOptions connectOptions)
         {
@@ -37,9 +38,10 @@ namespace CoAPnet.Extensions.DTLS
             {
                 throw new ArgumentNullException(nameof(buf));
             }
+            
+            ThrowIfNotConnected();
 
-            EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
-            return _socket.ReceiveFrom(buf, off, len, SocketFlags.None, ref remoteEndPoint);
+            return _socket.ReceiveFrom(buf, off, len, SocketFlags.None, ref _remoteEndPoint);
         }
 
         public void Send(byte[] buf, int off, int len)
@@ -49,10 +51,7 @@ namespace CoAPnet.Extensions.DTLS
                 throw new ArgumentNullException(nameof(buf));
             }
 
-            if (_isDisposed)
-            {
-                throw new CoapCommunicationException("The connection is closed.", null);
-            }
+            ThrowIfNotConnected();
 
             _socket.SendTo(buf, off, len, SocketFlags.None, _connectOptions.EndPoint);
         }
@@ -64,10 +63,25 @@ namespace CoAPnet.Extensions.DTLS
 
         public void Dispose()
         {
-            _isDisposed = true;
+            try
+            {
+                _socket?.Shutdown(SocketShutdown.Both);
+            }
+            finally
+            {
+                // There is no need to call "Disconnect" because we use UDP.
+                _socket?.Dispose();
 
-            // There is no need to call "Disconnect" because we use UDP.
-            _socket?.Dispose();
+                _socket = null;
+            }
+        }
+        
+        void ThrowIfNotConnected()
+        {
+            if (_socket == null)
+            {
+                throw new CoapCommunicationException("The connection is closed.", null);
+            }
         }
     }
 }

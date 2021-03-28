@@ -2,7 +2,7 @@
 
 namespace CoAPnet.Logging
 {
-    public class CoapNetLogMessage
+    public sealed class CoapNetLogMessage
     {
         public DateTime Timestamp
         {

@@ -19,7 +19,8 @@ namespace CoAPnet.Extensions.DTLS
 
             clientConnectOptionsBuilder.WithTransportLayer(() => new DtlsCoapTransportLayer
             {
-                Credentials = options.Credentials
+                Credentials = options.Credentials,
+                DtlsVersion = options.DtlsVersion
             });
 
             return clientConnectOptionsBuilder;

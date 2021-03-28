@@ -38,7 +38,9 @@ namespace CoAPnet.Transport
 
         public void Dispose()
         {
-#if NETSTANDARD1_3 || NETSTANDARD2_0
+#if NET452
+            _udpClient?.Close();
+#else
             _udpClient?.Dispose();
 #endif
         }

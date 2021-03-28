@@ -2,7 +2,7 @@
 
 namespace CoAPnet.Logging
 {
-    public class CoapNetLoggerConsoleSink : ICoapNetLoggerSink
+    public sealed class CoapNetLoggerConsoleSink : ICoapNetLoggerSink
     {
         public void ProcessLogMessage(CoapNetLogMessage logMessage)
         {

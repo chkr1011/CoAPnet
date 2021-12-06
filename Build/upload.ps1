@@ -2,7 +2,7 @@ param([string]$apiKey)
 
 Invoke-WebRequest -Uri "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile "nuget.exe"
 
-$files = Get-ChildItem -Path ".\NuGet" -Filter "*.nupkg"
+$files = Get-ChildItem -Path ".\..\Source" -Recurse -Filter "*.nupkg"
 foreach ($file in $files)
 {
 	Write-Host "Uploading: " $file

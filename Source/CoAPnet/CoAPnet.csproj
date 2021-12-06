@@ -1,15 +1,64 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net452;net5.0;netstandard1.3;netstandard2.0</TargetFrameworks>
-  </PropertyGroup>
+	<Target Name="ImportReleaseNotes" BeforeTargets="GenerateNuspec">
+		<ReadLinesFromFile File="..\..\Build\ReleaseNotes.md">
+			<Output TaskParameter="Lines" ItemName="ReleaseNotes" />
+		</ReadLinesFromFile>
+		<PropertyGroup>
+			<PackageReleaseNotes>@(ReleaseNotes, '%0a')</PackageReleaseNotes>
+		</PropertyGroup>
+	</Target>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net452;net5.0;net6.0;netstandard1.3;netstandard2.0</TargetFrameworks>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='uap10.0'">
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.10" />
-  </ItemGroup>
+		<AssemblyName>CoAPnet</AssemblyName>
+		<RootNamespace>CoAPnet</RootNamespace>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Company>The contributors of CoAPnet</Company>
+		<Product>CoAPnet</Product>
+		<Description>CoAPnet is a high performance .NET library for CoAP based communication. It provides a CoAP client and a CoAP server. It also has DTLS support out of the box.</Description>
+		<Authors>The contributors of CoAPnet</Authors>
+		<PackageId>CoAPnet</PackageId>
+		<SignAssembly>false</SignAssembly>
+		<DelaySign>false</DelaySign>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<Copyright>Christian Kratky 2019-2021</Copyright>
+		<PackageProjectUrl>https://github.com/chkr1011/CoAPnet</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/chkr1011/CoAPnet.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>CoAP Constrained Application Protocol CoAPClient CoAPServer Server NETStandard IoT InternetOfThings Messaging Hardware Arduino Sensor Actuator M2M ESP Smart Home Cities Automation Xamarin Blazor</PackageTags>
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<EnableNETAnalyzers>True</EnableNETAnalyzers>
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+		<PackageIcon>nuget.png</PackageIcon>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0'">
+		<PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.10" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\Images\nuget.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

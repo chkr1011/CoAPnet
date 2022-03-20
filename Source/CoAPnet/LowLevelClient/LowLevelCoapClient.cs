@@ -13,6 +13,8 @@ namespace CoAPnet.LowLevelClient
 {
     public sealed class LowLevelCoapClient : ILowLevelCoapClient
     {
+        readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(0, 1);
+        
         readonly CoapMessageEncoder _messageEncoder = new CoapMessageEncoder();
         readonly CoapMessageDecoder _messageDecoder;
         readonly CoapNetLogger _logger;
@@ -61,15 +63,23 @@ namespace CoAPnet.LowLevelClient
             }
         }
 
-        public Task SendAsync(CoapMessage message, CancellationToken cancellationToken)
+        public async Task SendAsync(CoapMessage message, CancellationToken cancellationToken)
         {
             if (message is null)
             {
                 throw new ArgumentNullException(nameof(message));
             }
 
-            var requestMessageBuffer = _messageEncoder.Encode(message);
-            return _transportLayerAdapter.SendAsync(requestMessageBuffer, cancellationToken);
+            await _syncRoot.WaitAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                var requestMessageBuffer = _messageEncoder.Encode(message);
+                await _transportLayerAdapter.SendAsync(requestMessageBuffer, cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                _syncRoot.Release();
+            }
         }
 
         public async Task<CoapMessage> ReceiveAsync(CancellationToken cancellationToken)

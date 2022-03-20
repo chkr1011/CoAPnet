@@ -28,7 +28,7 @@ namespace CoAPnet.Client
 
         public CoapClient(CoapNetLogger logger)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             _lowLevelClient = new LowLevelCoapClient(_logger);
             _observationManager = new CoapClientObservationManager(_messageToResponseConverter, _lowLevelClient, _logger);

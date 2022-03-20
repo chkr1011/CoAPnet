@@ -5,7 +5,7 @@
 </p>
 
 [![NuGet Badge](https://buildstats.info/nuget/CoAPnet)](https://www.nuget.org/packages/CoAPnet)
-[![BCH compliance](https://bettercodehub.com/edge/badge/chkr1011/CoAPnet?branch=master)](https://bettercodehub.com/)
+![Size](https://img.shields.io/github/repo-size/chkr1011/CoAPnet.svg)
 [![Join the chat at https://gitter.im/CoAPnet/community](https://badges.gitter.im/CoAPnet/community.svg)](https://gitter.im/CoAPnet/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://raw.githubusercontent.com/chkr1011/CoAPnet/master/LICENSE)
 

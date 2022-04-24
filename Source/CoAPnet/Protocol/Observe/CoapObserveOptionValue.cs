@@ -1,6 +1,6 @@
 ﻿namespace CoAPnet.Protocol.Observe
 {
-    public class CoapObserveOptionValue
+    public static class CoapObserveOptionValue
     {
         public const uint Register = 0;
 

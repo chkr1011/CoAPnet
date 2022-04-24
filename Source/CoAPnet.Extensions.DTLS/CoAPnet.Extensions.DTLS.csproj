@@ -28,8 +28,10 @@
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-
+		<LangVersion>7.3</LangVersion>
 		<PackageReleaseNotes>For release notes please go to CoAPnet release notes (https://www.nuget.org/packages/CoAPnet/).</PackageReleaseNotes>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

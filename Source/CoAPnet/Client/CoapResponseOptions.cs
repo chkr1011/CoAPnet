@@ -2,7 +2,7 @@
 
 namespace CoAPnet.Client
 {
-    public class CoapResponseOptions
+    public sealed class CoapResponseOptions
     {
         public CoapMessageContentFormat? ContentFormat
         {

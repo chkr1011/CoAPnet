@@ -2,7 +2,7 @@
 
 namespace CoAPnet.Protocol.Options
 {
-    public class CoapMessageOptionOpaqueValue : CoapMessageOptionValue
+    public sealed class CoapMessageOptionOpaqueValue : CoapMessageOptionValue
     {
         public CoapMessageOptionOpaqueValue(byte[] value)
         {

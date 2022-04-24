@@ -49,7 +49,7 @@ namespace CoAPnet.Tests
             using (var coapClient = new CoapFactory().CreateClient())
             {
                 var options = new CoapClientConnectOptionsBuilder()
-                    .WithHost("127.0.0.1")
+                    .WithHost("123.123.123.1")
                     .WithPort(5555)
                     .Build();
 

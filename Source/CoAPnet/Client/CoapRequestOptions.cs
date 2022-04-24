@@ -2,7 +2,7 @@
 
 namespace CoAPnet.Client
 {
-    public class CoapRequestOptions
+    public sealed class CoapRequestOptions
     {
         /// <summary>
         /// This is only required when accessing virtual servers.

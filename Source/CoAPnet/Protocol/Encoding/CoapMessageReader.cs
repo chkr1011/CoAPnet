@@ -1,24 +1,32 @@
 ﻿using System;
-using System.IO;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace CoAPnet.Protocol.Encoding
 {
     public sealed class CoapMessageReader : IDisposable
     {
-        readonly MemoryStream _memoryStream;
-        readonly ArraySegment<byte> _buffer;
+        readonly byte[] _buffer;
+        readonly int _length;
 
         int _bitOffset = -1;
         byte _byteCache;
+        int _position;
 
         public CoapMessageReader(ArraySegment<byte> buffer)
         {
-            _memoryStream = new MemoryStream(buffer.Array, 0, buffer.Count, false);
-            _buffer = buffer;
+            Debug.Assert(buffer.Array != null);
+
+            _buffer = buffer.Array;
+            _position = buffer.Offset;
+            _length = buffer.Count;
         }
 
-        public bool EndOfStream => _memoryStream.Position == _memoryStream.Length;
+        public bool EndOfStream => _position == _length;
+
+        public void Dispose()
+        {
+        }
 
         public int ReadBits(int count)
         {
@@ -47,31 +55,31 @@ namespace CoAPnet.Protocol.Encoding
 
         public byte ReadByte()
         {
-            return (byte)_memoryStream.ReadByte();
+            var @byte = _buffer[_position];
+            _position++;
+
+            return @byte;
         }
 
         public byte[] ReadBytes(int count)
         {
             var buffer = new byte[count];
-            _memoryStream.Read(buffer, 0, buffer.Length);
-
+            Array.Copy(_buffer, _position, buffer, 0, count);
+            _position += count;
             return buffer;
         }
 
-        public ArraySegment<byte> ReadToEnd()
+        public byte[] ReadToEnd()
         {
-            return new ArraySegment<byte>(_buffer.Array, (int)_memoryStream.Position, (int)(_memoryStream.Length - _memoryStream.Position));
-        }
-
-        public void Dispose()
-        {
-            _memoryStream.Dispose();
+            // We have to copy the payload because the internal buffer is used for other calls!
+            return ReadBytes(_length - _position);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void FillByteCache()
         {
-            _byteCache = (byte)_memoryStream.ReadByte();
+            _byteCache = _buffer[_position];
+            _position++;
             _bitOffset = 7;
         }
     }

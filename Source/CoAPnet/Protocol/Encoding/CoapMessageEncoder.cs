@@ -8,7 +8,7 @@ namespace CoAPnet.Protocol.Encoding
 {
     public sealed class CoapMessageEncoder
     {
-        readonly byte[] _emptyArray = new byte[0];
+        static readonly byte[] EmptyArray = new byte[0];
 
         public ArraySegment<byte> Encode(CoapMessage message)
         {
@@ -48,7 +48,7 @@ namespace CoAPnet.Protocol.Encoding
             }
         }
 
-        void EncodeOptions(IEnumerable<CoapMessageOption> options, CoapMessageWriter writer)
+        static void EncodeOptions(IEnumerable<CoapMessageOption> options, CoapMessageWriter writer)
         {
             if (options == null)
             {
@@ -66,7 +66,7 @@ namespace CoAPnet.Protocol.Encoding
 
                 if (option.Value is CoapMessageOptionEmptyValue)
                 {
-                    value = _emptyArray;
+                    value = EmptyArray;
                 }
                 else if (option.Value is CoapMessageOptionUintValue uintValue)
                 {

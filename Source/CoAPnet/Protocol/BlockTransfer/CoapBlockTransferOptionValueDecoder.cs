@@ -3,9 +3,9 @@ using System;
 
 namespace CoAPnet.Protocol.BlockTransfer
 {
-    public class CoapBlockTransferOptionValueDecoder
+    public static class CoapBlockTransferOptionValueDecoder
     {
-        public CoapBlockTransferOptionValue Decode(uint value)
+        public static CoapBlockTransferOptionValue Decode(uint value)
         {
             var mask = 0x7;
             var size = (ushort)(value & mask);

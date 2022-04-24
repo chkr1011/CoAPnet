@@ -3,9 +3,9 @@ using System;
 
 namespace CoAPnet.Protocol.BlockTransfer
 {
-    public class CoapBlockTransferOptionValueEncoder
+    public static class CoapBlockTransferOptionValueEncoder
     {
-        public uint Encode(CoapBlockTransferOptionValue value)
+        public static uint Encode(CoapBlockTransferOptionValue value)
         {
             if (value is null)
             {

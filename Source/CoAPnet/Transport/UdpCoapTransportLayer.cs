@@ -7,8 +7,8 @@ namespace CoAPnet.Transport
 {
     public sealed class UdpCoapTransportLayer : ICoapTransportLayer
     {
-        UdpClient _udpClient;
         CoapTransportLayerConnectOptions _connectOptions;
+        UdpClient _udpClient;
 
         public Task ConnectAsync(CoapTransportLayerConnectOptions options, CancellationToken cancellationToken)
         {
@@ -23,7 +23,12 @@ namespace CoAPnet.Transport
 
         public async Task<int> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
         {
+#if NET6_0_OR_GREATER
+            var receiveResult = await _udpClient.ReceiveAsync(cancellationToken).ConfigureAwait(false);
+#else
             var receiveResult = await _udpClient.ReceiveAsync().ConfigureAwait(false);
+#endif
+
             Array.Copy(receiveResult.Buffer, 0, buffer.Array, buffer.Offset, receiveResult.Buffer.Length);
 
             return receiveResult.Buffer.Length;

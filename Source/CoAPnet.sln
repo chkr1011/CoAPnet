@@ -14,7 +14,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{050EC2DA-10AC-4453-BE76-B3BA90CA1EB6}"
 	ProjectSection(SolutionItems) = preProject
 		..\Build\build.ps1 = ..\Build\build.ps1
-		..\Build\CoAPnet.Extensions.DTLS.nuspec = ..\Build\CoAPnet.Extensions.DTLS.nuspec
 		..\Build\ReleaseNotes.md = ..\Build\ReleaseNotes.md
 		..\Build\upload.ps1 = ..\Build\upload.ps1
 	EndProjectSection

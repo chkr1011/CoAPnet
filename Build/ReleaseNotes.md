@@ -1,4 +1,3 @@
-[Core] Fixed null ref exception in TCP transport layer.
-[Core] Added support for .NET 6.0.
-[Core] Assemblies are now signed (strong name).
-[Core] Updated nuget packages.
+[Core] Improved support for .NET 6.0+ (Passing cancellation tokens etc.).
+[Client] Both clients are not thread safe.
+[Client] Fixed an issue in internal buffer management which may lead to payload corruption.

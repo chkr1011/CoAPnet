@@ -1,6 +1,6 @@
 ﻿namespace CoAPnet.Protocol.Options
 {
-    public class CoapMessageOptionEmptyValue : CoapMessageOptionValue
+    public sealed class CoapMessageOptionEmptyValue : CoapMessageOptionValue
     {
         public override bool Equals(object obj)
         {

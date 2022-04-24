@@ -2,7 +2,7 @@
 
 namespace CoAPnet.Client
 {
-    public class CoapRequest
+    public sealed class CoapRequest
     {
         public CoapRequestMethod Method { get; set; } = CoapRequestMethod.Get;
 

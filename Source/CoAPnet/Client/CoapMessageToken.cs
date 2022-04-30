@@ -2,7 +2,7 @@
 
 namespace CoAPnet.Client
 {
-    public class CoapMessageToken
+    public sealed class CoapMessageToken
     {
         public CoapMessageToken(byte[] value)
         {

@@ -1,6 +1,6 @@
 ﻿namespace CoAPnet.Client
 {
-    public class HandleResponseContext
+    public sealed class HandleResponseContext
     {
         public uint SequenceNumber { get; set; }
 

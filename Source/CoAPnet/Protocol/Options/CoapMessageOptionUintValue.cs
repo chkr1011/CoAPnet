@@ -1,6 +1,6 @@
 ﻿namespace CoAPnet.Protocol.Options
 {
-    public class CoapMessageOptionUintValue : CoapMessageOptionValue
+    public sealed class CoapMessageOptionUintValue : CoapMessageOptionValue
     {
         public CoapMessageOptionUintValue(uint value)
         {

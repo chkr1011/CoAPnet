@@ -1,6 +1,6 @@
 ﻿namespace CoAPnet.Client
 {
-    public class CoapResponse
+    public sealed class CoapResponse
     {
         public CoapResponseStatusCode StatusCode
         {

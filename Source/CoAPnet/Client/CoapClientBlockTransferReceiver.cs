@@ -13,9 +13,6 @@ namespace CoAPnet.Client
 {
     public sealed class CoapClientBlockTransferReceiver
     {
-        readonly CoapBlockTransferOptionValueEncoder _blockValueEncoder = new CoapBlockTransferOptionValueEncoder();
-        readonly CoapBlockTransferOptionValueDecoder _blockValueDecoder = new CoapBlockTransferOptionValueDecoder();
-
         readonly CoapMessage _requestMessage;
         readonly CoapMessage _firstResponseMessage;
         readonly CoapClient _client;
@@ -42,7 +39,7 @@ namespace CoAPnet.Client
         public async Task<ArraySegment<byte>> ReceiveFullPayload(CancellationToken cancellationToken)
         {
             var receivedBlock2Option = _firstResponseMessage.Options.First(o => o.Number == CoapMessageOptionNumber.Block2);
-            var receivedBlock2OptionValue = _blockValueDecoder.Decode(((CoapMessageOptionUintValue)receivedBlock2Option.Value).Value);
+            var receivedBlock2OptionValue = CoapBlockTransferOptionValueDecoder.Decode(((CoapMessageOptionUintValue)receivedBlock2Option.Value).Value);
             _logger.Trace(nameof(CoapClientBlockTransferReceiver), "Received Block2 {0}.", FormatBlock2OptionValue(receivedBlock2OptionValue));
 
             var requestMessage = new CoapMessage
@@ -69,11 +66,11 @@ namespace CoAPnet.Client
                     receivedBlock2OptionValue.Number++;
 
                     // TODO: Avoid setting value. Create new instead.
-                    requestBlock2Option.Value = new CoapMessageOptionUintValue(_blockValueEncoder.Encode(receivedBlock2OptionValue));
+                    requestBlock2Option.Value = new CoapMessageOptionUintValue(CoapBlockTransferOptionValueEncoder.Encode(receivedBlock2OptionValue));
 
                     var response = await _client.RequestAsync(requestMessage, cancellationToken).ConfigureAwait(false);
                     receivedBlock2Option = response.Options.First(o => o.Number == CoapMessageOptionNumber.Block2);
-                    receivedBlock2OptionValue = _blockValueDecoder.Decode(((CoapMessageOptionUintValue)receivedBlock2Option.Value).Value);
+                    receivedBlock2OptionValue = CoapBlockTransferOptionValueDecoder.Decode(((CoapMessageOptionUintValue)receivedBlock2Option.Value).Value);
 
                     _logger.Trace(nameof(CoapClientBlockTransferReceiver), "Received Block2 {0}.", FormatBlock2OptionValue(receivedBlock2OptionValue));
 

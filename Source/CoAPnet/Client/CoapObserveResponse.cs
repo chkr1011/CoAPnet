@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace CoAPnet.Client
 {
-    public class CoapObserveResponse
+    public sealed class CoapObserveResponse
     {
         readonly ICoapClient _client;
 

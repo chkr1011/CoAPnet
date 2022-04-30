@@ -1,8 +1,8 @@
-﻿using CoAPnet.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using CoAPnet.Exceptions;
 using CoAPnet.Logging;
 using CoAPnet.Protocol.Options;
-using System;
-using System.Collections.Generic;
 
 namespace CoAPnet.Protocol.Encoding
 {
@@ -15,8 +15,7 @@ namespace CoAPnet.Protocol.Encoding
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
-        // TODO: Consider creating "CoapMessageDecodeResult" which has Message (null or set) and "DecodeResult" as INTERFACE with all possible errors (VersionInvalidDecodeResult) etc.
+        
         public CoapMessage Decode(ArraySegment<byte> buffer)
         {
             using (var reader = new CoapMessageReader(buffer))
@@ -59,7 +58,7 @@ namespace CoAPnet.Protocol.Encoding
                     Id = (ushort)id,
                     Token = token,
                     Options = options,
-                    Payload = payload
+                    Payload = new ArraySegment<byte>(payload)
                 };
 
                 return message;
@@ -158,7 +157,8 @@ namespace CoAPnet.Protocol.Encoding
                 return _optionFactory.CreateObserve(DecodeUintOptionValue(value));
             }
 
-            _logger.Warning(nameof(CoapMessageDecoder), "Invalid message: CoAP option number {0} not supported.", number);
+            _logger.Warning(nameof(CoapMessageDecoder), "Invalid message: CoAP option number {0} not supported.",
+                number);
 
             // We do not throw because new RFCs might use new options. We wrap unknown ones
             // into a opaque value.
@@ -180,7 +180,7 @@ namespace CoAPnet.Protocol.Encoding
                 var delta = reader.ReadBits(4);
                 var length = reader.ReadBits(4);
 
-                if ((byte)(delta << 4 | length) == 0xFF)
+                if ((byte)((delta << 4) | length) == 0xFF)
                 {
                     // Payload marker.
                     break;
@@ -235,17 +235,17 @@ namespace CoAPnet.Protocol.Encoding
 
             if (value.Length == 2)
             {
-                return (uint)(value[0] << 8 | value[1]);
+                return (uint)((value[0] << 8) | value[1]);
             }
 
             if (value.Length == 3)
             {
-                return (uint)(value[0] << 16 | value[1] << 8 | value[2]);
+                return (uint)((value[0] << 16) | (value[1] << 8) | value[2]);
             }
 
             if (value.Length == 4)
             {
-                return (uint)(value[0] << 24 | value[1] << 16 | value[2] << 8 | value[3]);
+                return (uint)((value[0] << 24) | (value[1] << 16) | (value[2] << 8) | value[3]);
             }
 
             throw new CoapProtocolViolationException("The buffer for the uint option is too long.");

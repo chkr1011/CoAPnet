@@ -2,7 +2,7 @@
 
 namespace CoAPnet.Client
 {
-    public class CoapMessageTokenProvider
+    public sealed class CoapMessageTokenProvider
     {
         ulong _value;
 

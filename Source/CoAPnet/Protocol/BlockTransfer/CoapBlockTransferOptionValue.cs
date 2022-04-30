@@ -1,6 +1,6 @@
 ﻿namespace CoAPnet.Protocol.BlockTransfer
 {
-    public class CoapBlockTransferOptionValue
+    public sealed class CoapBlockTransferOptionValue
     {
         public ushort Number { get; set; }
 

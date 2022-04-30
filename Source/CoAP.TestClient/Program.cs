@@ -14,7 +14,8 @@ static class Program
 {
     static async Task Main()
     {
-        await SendRequestsToCoapMe();
+        await ObserveTradfriLamp();
+        //await SendRequestsToCoapMe();
     }
 
     static async Task RequestInParallelTasks()
@@ -272,7 +273,7 @@ static class Program
 
             request = new CoapRequestBuilder()
                 .WithMethod(CoapRequestMethod.Get)
-                .WithPath("15001/65550")
+                .WithPath("15001/65557")
                 .Build();
 
             response = await coapClient.RequestAsync(request, CancellationToken.None).ConfigureAwait(false);
@@ -280,7 +281,7 @@ static class Program
 
             request = new CoapRequestBuilder()
                 .WithMethod(CoapRequestMethod.Put)
-                .WithPath("15001/65550")
+                .WithPath("15001/65557")
                 .WithPayload("{\"3311\": [{\"5850\": 1}]}")
                 .Build();
 
@@ -288,12 +289,13 @@ static class Program
             PrintResponse(response);
 
             var observeOptions = new CoapObserveOptionsBuilder()
-                .WithPath("15001/65550")
+                .WithPath("15001/65557")
                 .WithResponseHandler(new ResponseHandler())
                 .Build();
 
             var observeResponse =
                 await coapClient.ObserveAsync(observeOptions, CancellationToken.None).ConfigureAwait(false);
+            
             PrintResponse(observeResponse.Response);
 
             Console.WriteLine("Observed messages for lamp!");

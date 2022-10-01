@@ -68,7 +68,6 @@ static class Program
 
         var connectOptions = new CoapClientConnectOptionsBuilder()
             .WithHost("GW-B8D7AF2B3EA3.fritz.box")
-            //.WithHost("127.0.0.1")
             .WithDtlsTransportLayer(o =>
                 o.WithPreSharedKey("Client_identity", "7x3A1gqWvu9cBGD7"))
             .Build();

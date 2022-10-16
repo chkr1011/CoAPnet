@@ -11,7 +11,7 @@
 
 # CoAPnet
 
-CoAPnet is a high performance .NET library for CoAPnet based communication. It provides a CoAP client and a CoAP server. The library runs on macOS, Linux and Windows. It also supports UDP, DTLS, TCP and TLS connections.
+CoAPnet is a high performance .NET library for CoAPnet based communication. The library runs on macOS, Linux and Windows. It also supports UDP, DTLS, TCP and TLS connections.
 
 ## Features
 
@@ -24,8 +24,8 @@ CoAPnet is a high performance .NET library for CoAPnet based communication. It p
 ### General
 
 * Async support
-* DTLS (up to 1.2) support for client and server
-* TLS 1.2 support for client and server (but not UWP servers)
+* DTLS (up to 1.2) support
+* TLS 1.2 support
 * Extensible communication channels (e.g. In-Memory, TCP, TCP+TLS, UDP, UDP+TLS)
 * Lightweight (only the low level implementation of CoAPnet, no overhead)
 * Performance optimized
@@ -77,7 +77,7 @@ If you use this library and want to see your project here please create a pull r
 
 MIT License
 
-CoAPnet Copyright (c) 2016-2020 Christian Kratky
+CoAPnet Copyright (c) 2016-2022 Christian Kratky
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
